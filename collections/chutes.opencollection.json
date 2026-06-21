@@ -1,0 +1,255 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Chutes API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chat",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a chat completion.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://llm.chutes.ai/v1/chat/completions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI-compatible chat completion. Set stream=true for Server-Sent Events."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Models",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List available models.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/models"
+          },
+          "docs": "Lists the live models currently reachable on the Chutes network."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Chutes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List chutes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.chutes.ai/chutes/"
+          },
+          "docs": "List (and optionally filter/paginate) chutes."
+        },
+        {
+          "info": {
+            "name": "Deploy a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.chutes.ai/chutes/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Standard deploy from the Chutes development kit (CDK)."
+        },
+        {
+          "info": {
+            "name": "Get a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.chutes.ai/chutes/:chute_id_or_name",
+            "params": [
+              {
+                "name": "chute_id_or_name",
+                "value": "",
+                "type": "path",
+                "description": "The chute ID or name to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieve a chute's details by ID or name."
+        },
+        {
+          "info": {
+            "name": "Update a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.chutes.ai/chutes/:chute_id_or_name",
+            "params": [
+              {
+                "name": "chute_id_or_name",
+                "value": "",
+                "type": "path",
+                "description": "The chute ID or name to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update chute metadata such as readme, tagline, logo, and scaling settings."
+        },
+        {
+          "info": {
+            "name": "Delete a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.chutes.ai/chutes/:chute_id",
+            "params": [
+              {
+                "name": "chute_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the chute to delete."
+              }
+            ]
+          },
+          "docs": "Remove a chute by ID."
+        },
+        {
+          "info": {
+            "name": "Deploy a templated vLLM chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.chutes.ai/chutes/vllm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deploy a templated vLLM model as a chute."
+        },
+        {
+          "info": {
+            "name": "Deploy a templated diffusion chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.chutes.ai/chutes/diffusion",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deploy a templated diffusion (image generation) model as a chute."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Images",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List images.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.chutes.ai/images/"
+          },
+          "docs": "List (and optionally filter/paginate) images."
+        },
+        {
+          "info": {
+            "name": "Create an image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.chutes.ai/images/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Store image metadata and kick off an asynchronous image build."
+        },
+        {
+          "info": {
+            "name": "Get an image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.chutes.ai/images/:image_id_or_name",
+            "params": [
+              {
+                "name": "image_id_or_name",
+                "value": "",
+                "type": "path",
+                "description": "The image ID or name to retrieve."
+              }
+            ]
+          },
+          "docs": "Load a single image by ID or name."
+        },
+        {
+          "info": {
+            "name": "Delete an image.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.chutes.ai/images/:image_id_or_name",
+            "params": [
+              {
+                "name": "image_id_or_name",
+                "value": "",
+                "type": "path",
+                "description": "The image ID or name:tag to delete."
+              }
+            ]
+          },
+          "docs": "Delete an image by ID or name:tag."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

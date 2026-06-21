@@ -1,0 +1,126 @@
+aid: chutes
+url: https://raw.githubusercontent.com/api-evangelist/chutes/refs/heads/main/apis.yml
+name: Chutes
+kind: company
+description: Chutes is a permissionless, serverless AI compute platform that lets
+  developers deploy and run any model as an autoscaling "chute" on decentralized GPU
+  capacity (Bittensor Subnet 64). It exposes a single OpenAI-compatible inference
+  endpoint at llm.chutes.ai/v1 for hundreds of open-source LLMs, plus a management
+  REST API at api.chutes.ai for building images and deploying, listing, and operating
+  chutes.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- AI
+- LLM
+- Inference
+- Serverless
+- GPU
+- Bittensor
+created: '2026-06-21'
+modified: '2026-06-21'
+specificationVersion: '0.19'
+apis:
+- aid: chutes:chutes-llm-inference-api
+  name: Chutes LLM Inference (Chat Completions) API
+  tags:
+  - Chat
+  - Completions
+  - LLM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  properties:
+  - url: https://chutes.ai/docs/examples/llm-chat
+    type: Documentation
+  - url: https://chutes.ai/docs/api-reference/overview
+    type: APIReference
+  - url: openapi/chutes-openapi.yml
+    type: OpenAPI
+  - url: asyncapi/chutes-asyncapi.yml
+    type: AsyncAPI
+  - url: collections/chutes.postman_collection.json
+    type: Postman
+  description: OpenAI-compatible chat completions across hundreds of open-source models
+    (DeepSeek, Qwen, Llama, GLM, Mistral, and more) served on the Chutes network at
+    a single shared endpoint, with streaming, tool use, and a drop-in OpenAI client.
+- aid: chutes:chutes-image-other-models-api
+  name: Chutes Image / Other Models API
+  tags:
+  - Image
+  - Diffusion
+  - Multimodal
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://chutes.ai/docs/templates/vllm
+  baseURL: https://api.chutes.ai
+  properties:
+  - url: https://chutes.ai/docs/core-concepts/cords
+    type: Documentation
+  - url: https://chutes.ai/docs/api-reference/overview
+    type: APIReference
+  - url: openapi/chutes-openapi.yml
+    type: OpenAPI
+  - url: collections/chutes.postman_collection.json
+    type: Postman
+  description: Image generation (diffusion), embeddings, audio, and other non-chat
+    model workloads are exposed as user-defined "cords" (decorated HTTP endpoints)
+    on each deployed chute, plus templated vLLM and diffusion deploy helpers.
+- aid: chutes:chutes-management-api
+  name: Chutes Management (Deploy / List) API
+  tags:
+  - Management
+  - Deploy
+  - Serverless
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://chutes.ai/docs/api-reference/chutes
+  baseURL: https://api.chutes.ai
+  properties:
+  - url: https://chutes.ai/docs/getting-started/running-a-chute
+    type: Documentation
+  - url: https://chutes.ai/docs/api-reference/chutes
+    type: APIReference
+  - url: openapi/chutes-openapi.yml
+    type: OpenAPI
+  - url: collections/chutes.postman_collection.json
+    type: Postman
+  description: REST API to list, retrieve, deploy, update, and delete chutes (serverless
+    AI apps), plus templated vLLM/diffusion deploys, warmup, utilization, miner means,
+    and TEE attestation evidence.
+- aid: chutes:chutes-images-api
+  name: Chutes Images API
+  tags:
+  - Images
+  - Build
+  - Containers
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://chutes.ai/docs/api-reference/images
+  baseURL: https://api.chutes.ai
+  properties:
+  - url: https://chutes.ai/docs/core-concepts/templates
+    type: Documentation
+  - url: https://chutes.ai/docs/api-reference/images
+    type: APIReference
+  - url: openapi/chutes-openapi.yml
+    type: OpenAPI
+  - url: collections/chutes.postman_collection.json
+    type: Postman
+  description: Create, list, retrieve, and delete container images that chutes run
+    from; image creation stores metadata and kicks off an asynchronous build that
+    is published to the Chutes registry.
+common:
+- type: GitHubOrganization
+  url: https://github.com/rayonlabs
+- type: LinkedIn
+  url: https://www.linkedin.com/company/chutesai
+- type: Website
+  url: https://chutes.ai/
+- type: Documentation
+  url: https://chutes.ai/docs
+- type: Plans
+  url: plans/chutes-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/chutes-rate-limits.yml
+- type: FinOps
+  url: finops/chutes-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

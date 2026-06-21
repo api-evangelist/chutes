@@ -1,0 +1,108 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Chutes
+providerId: chutes
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- AI
+- LLM
+- Inference
+- Serverless
+- GPU
+- Bittensor
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Chutes spend. Chutes bills usage-based per-token rates for public
+  LLM inference (per model, with some models free/subsidized by Bittensor TAO
+  incentives), per-second GPU runtime plus a one-time deployment fee for private
+  (dedicated) chutes, and optional fixed monthly budgets (Plus/Pro) that discount
+  per-token rates beyond an included quota. Costs fluctuate with Bittensor Subnet
+  64 economics, so unit rates are not reconciled here.
+notes: >-
+  Per-model token rates and GPU hourly rates are snapshots subject to subnet
+  economics; verify against the Chutes pricing page during reconciliation.
+sources:
+- https://chutes.ai/pricing
+- https://chutes.ai/docs
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Chutes
+serviceCategory: AI and Machine Learning
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Chutes
+  ServiceCategory: AI and Machine Learning
+  ProviderName: Chutes
+  PublisherName: Chutes
+  InvoiceIssuerName: Chutes
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: input_tokens
+  description: Tokens sent in chat completion requests, billed per 1M tokens per model.
+  unit: tokens
+  aggregation: sum
+  dimensions:
+  - account
+  - model
+  - api
+- name: output_tokens
+  description: Tokens generated, billed per 1M tokens per model.
+  unit: tokens
+  aggregation: sum
+  dimensions:
+  - account
+  - model
+  - api
+- name: gpu_runtime_seconds
+  description: Per-second runtime of private (dedicated) chutes on confidential GPU capacity.
+  unit: seconds
+  aggregation: sum
+  dimensions:
+  - account
+  - chute
+  - gpu_type
+- name: deployment_fee
+  description: One-time fee charged per private chute deployment (3x the GPU hourly rate).
+  unit: deploys
+  aggregation: sum
+  dimensions:
+  - account
+  - chute
+- name: monthly_budget
+  description: Fixed monthly plan budget (Plus/Pro) charged per subscription.
+  unit: subscriptions
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+principles:
+- name: Visibility
+  description: Pull Chutes usage and billing data; inspect per-model token burn and per-chute GPU-seconds.
+- name: Allocation
+  description: Tag API keys and chutes per workload/team; map to internal cost centers.
+- name: Optimization
+  description: Route eligible work to free/subsidized models; pick smaller open-source models when sufficient; rely on idle auto-shutdown for private chutes; use Plus/Pro budgets for predictable spend.
+- name: Accountability
+  description: Assign owners per chute/key; review token and GPU-second spend monthly against budget.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

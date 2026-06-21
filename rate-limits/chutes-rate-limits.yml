@@ -1,0 +1,77 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Chutes
+providerId: chutes
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- AI
+- LLM
+- Inference
+- Serverless
+- GPU
+- Bittensor
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Chutes enforces per-account quotas and concurrency limits on public inference
+  through llm.chutes.ai/v1, governed by available subnet capacity, the account's
+  plan (pay-as-you-go vs. Plus/Pro monthly budget), and per-model availability.
+  Free / subsidized models carry the tightest throttles. Private (dedicated)
+  chutes are limited by the GPU capacity provisioned for the deployment rather
+  than a shared quota. Specific per-model RPM/TPM values are not reconciled in
+  this artifact.
+notes: >-
+  Verify per-model and per-plan limits in the Chutes dashboard during
+  reconciliation; throttles shift with Bittensor Subnet 64 capacity and as
+  accounts move between pay-as-you-go and monthly plans.
+sources:
+- https://chutes.ai/docs
+- https://chutes.ai/pricing
+- https://chutes.ai/docs/api-reference/overview
+responseCodes:
+  throttled: 429
+limits:
+- name: Requests Per Minute (RPM)
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: Per-model and per-plan; varies with subnet capacity.
+- name: Tokens Per Minute (TPM)
+  scope: account
+  metric: tokens
+  limit: see provider documentation
+  notes: Per-model and per-plan; varies with subnet capacity.
+- name: Concurrency
+  scope: account
+  metric: concurrent_requests
+  limit: see provider documentation
+  notes: Concurrent in-flight inference requests per account.
+- name: Free / Subsidized Model Quota
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: Free and subsidized models carry tighter throttles than paid models.
+- name: Monthly Budget Quota
+  scope: account
+  metric: spend
+  limit: plan dependent
+  notes: Plus/Pro monthly plans include a fixed budget; usage beyond it is discounted per-token.
+- name: Private Chute Capacity
+  scope: deployment
+  metric: gpu_capacity
+  limit: provisioned per deployment
+  notes: Dedicated chutes are bounded by the GPU capacity provisioned, not a shared quota.
+policies:
+- name: Plan-Tiered Limits
+  description: Quotas and budgets raise as accounts move from pay-as-you-go to Plus, Pro, and Enterprise plans.
+- name: Subnet Capacity
+  description: Public inference throughput depends on live Bittensor Subnet 64 miner capacity for the requested model.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

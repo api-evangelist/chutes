@@ -1,0 +1,83 @@
+aid: chutes
+name: Chutes
+review:
+  question: Does Chutes expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-21'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: true
+  asyncapiScopeNote: |
+    Per updated API Evangelist scope (2026-05-29), HTTP Server-Sent Events
+    (SSE) is in-scope for AsyncAPI modeling. An AsyncAPI 2.6 document was
+    created at asyncapi/chutes-asyncapi.yml describing the chat completion
+    SSE stream (POST /chat/completions with stream=true) on the
+    OpenAI-compatible endpoint https://llm.chutes.ai/v1. No WebSocket
+    surface was modeled because none is documented for end users.
+findings:
+  summary: |
+    Chutes does not publish a documented public WebSocket API for end users.
+    The inference surface is OpenAI-compatible and exposes only REST (HTTPS)
+    endpoints under https://llm.chutes.ai/v1, and the management surface is
+    REST under https://api.chutes.ai. Streaming for chat completions is
+    delivered as HTTP Server-Sent Events (SSE) via the `stream: true`
+    parameter on the REST chat completions endpoint; SSE is a one-way HTTP
+    streaming transport and is not WebSocket. The Chutes platform internally
+    uses a socket.chutes.ai service for miner/validator coordination, but
+    that is infrastructure plumbing, not a documented public API surface.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://llm.chutes.ai/v1
+      documented: true
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.chutes.ai
+      documented: true
+    - protocol: SSE
+      scheme: https
+      note: Server-Sent Events delivered over the same REST chat completions endpoint when stream=true. Not WebSocket.
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No public WebSocket endpoint is documented in the Chutes API reference or examples. socket.chutes.ai exists for internal miner/validator coordination, not as a public API.
+  endpointsConfirmedRest:
+    - POST https://llm.chutes.ai/v1/chat/completions
+    - GET  https://llm.chutes.ai/v1/models
+    - GET  https://api.chutes.ai/chutes/
+    - POST https://api.chutes.ai/chutes/
+    - GET  https://api.chutes.ai/chutes/{chute_id_or_name}
+    - PUT  https://api.chutes.ai/chutes/{chute_id_or_name}
+    - DELETE https://api.chutes.ai/chutes/{chute_id}
+    - GET  https://api.chutes.ai/chutes/code/{chute_id}
+    - GET  https://api.chutes.ai/chutes/{chute_id}/hf_info
+    - GET  https://api.chutes.ai/chutes/warmup/{chute_id_or_name}
+    - GET  https://api.chutes.ai/chutes/utilization
+    - POST https://api.chutes.ai/chutes/vllm
+    - POST https://api.chutes.ai/chutes/diffusion
+    - GET  https://api.chutes.ai/images/
+    - POST https://api.chutes.ai/images/
+    - GET  https://api.chutes.ai/images/{image_id_or_name}
+    - DELETE https://api.chutes.ai/images/{image_id_or_name}
+sources:
+  - url: https://chutes.ai/docs
+    type: Documentation
+    note: Overview lists OpenAI-compatible REST inference at llm.chutes.ai/v1 and management at api.chutes.ai; no public WebSocket mentioned.
+  - url: https://chutes.ai/docs/api-reference/overview
+    type: APIReference
+    note: All documented endpoints are HTTPS REST grouped by resource (chutes, images, instances, etc.).
+  - url: https://chutes.ai/docs/examples/llm-chat
+    type: Documentation
+    note: Chat streaming uses stream=true delivering Server-Sent Events over HTTPS, not WebSocket.
+  - url: https://github.com/rayonlabs/chutes-api
+    type: SourceCode
+    note: References socket.chutes.ai for internal coordination; not a documented public WebSocket API.
+actions:
+  asyncapiPath: asyncapi/chutes-asyncapi.yml
+  apisYmlUpdated: true
+  reason: |
+    No public WebSocket protocol surface exists. Under the updated 2026-05-29
+    scope that allows SSE in AsyncAPI, an AsyncAPI 2.6 document was authored
+    for the chat completion SSE stream, with HTTP+SSE transport documented
+    explicitly throughout the spec (server protocol, channel bindings,
+    info.x-transport-notes) so SSE is never misrepresented as WebSocket.

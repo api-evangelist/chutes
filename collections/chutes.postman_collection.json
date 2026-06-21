@@ -1,0 +1,568 @@
+{
+  "item": [
+    {
+      "id": "c1a00001-0000-4000-8000-000000000001",
+      "name": "Chat",
+      "description": {
+        "content": "OpenAI-compatible chat completions on the shared Chutes inference endpoint.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c1a00001-0000-4000-8000-000000000002",
+          "name": "Create a chat completion.",
+          "request": {
+            "name": "Create a chat completion.",
+            "description": {
+              "content": "OpenAI-compatible chat completion. Set stream=true to receive Server-Sent Events.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://llm.chutes.ai/v1/chat/completions",
+              "protocol": "https",
+              "host": ["llm", "chutes", "ai"],
+              "path": ["v1", "chat", "completions"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"deepseek-ai/DeepSeek-V3-0324\",\n  \"messages\": [\n    { \"role\": \"user\", \"content\": \"Hello!\" }\n  ],\n  \"max_tokens\": 100,\n  \"temperature\": 0.7,\n  \"stream\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c1a00002-0000-4000-8000-000000000001",
+      "name": "Models",
+      "description": {
+        "content": "List models available on the Chutes network.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c1a00002-0000-4000-8000-000000000002",
+          "name": "List available models.",
+          "request": {
+            "name": "List available models.",
+            "description": {
+              "content": "Lists the live models currently reachable on the Chutes network.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://llm.chutes.ai/v1/models",
+              "protocol": "https",
+              "host": ["llm", "chutes", "ai"],
+              "path": ["v1", "models"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c1a00003-0000-4000-8000-000000000001",
+      "name": "Chutes",
+      "description": {
+        "content": "Deploy, list, retrieve, update, and delete chutes (serverless AI apps).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c1a00003-0000-4000-8000-000000000002",
+          "name": "List chutes.",
+          "request": {
+            "name": "List chutes.",
+            "description": {
+              "content": "List (and optionally filter/paginate) chutes.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", ""],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000003",
+          "name": "Deploy a chute.",
+          "request": {
+            "name": "Deploy a chute.",
+            "description": {
+              "content": "Standard deploy from the Chutes development kit (CDK).",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", ""],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"image\": \"<string>\",\n  \"code\": \"<string>\",\n  \"node_selector\": { \"gpu_count\": 1 },\n  \"public\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000004",
+          "name": "Get a chute.",
+          "request": {
+            "name": "Get a chute.",
+            "description": {
+              "content": "Retrieve a chute's details by ID or name.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/:chute_id_or_name",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", ":chute_id_or_name"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "chute_id_or_name",
+                  "value": "",
+                  "description": "The chute ID or name to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000005",
+          "name": "Update a chute.",
+          "request": {
+            "name": "Update a chute.",
+            "description": {
+              "content": "Update chute metadata such as readme, tagline, logo, and scaling settings.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/:chute_id_or_name",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", ":chute_id_or_name"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "chute_id_or_name",
+                  "value": "",
+                  "description": "The chute ID or name to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"readme\": \"<string>\",\n  \"tagline\": \"<string>\",\n  \"logo\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000006",
+          "name": "Delete a chute.",
+          "request": {
+            "name": "Delete a chute.",
+            "description": {
+              "content": "Remove a chute by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/:chute_id",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", ":chute_id"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "chute_id",
+                  "value": "",
+                  "description": "The ID of the chute to delete."
+                }
+              ]
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000007",
+          "name": "Deploy a templated vLLM chute.",
+          "request": {
+            "name": "Deploy a templated vLLM chute.",
+            "description": {
+              "content": "Deploy a templated vLLM model as a chute.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/vllm",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", "vllm"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"node_selector\": { \"gpu_count\": 1 },\n  \"public\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00003-0000-4000-8000-000000000008",
+          "name": "Deploy a templated diffusion chute.",
+          "request": {
+            "name": "Deploy a templated diffusion chute.",
+            "description": {
+              "content": "Deploy a templated diffusion (image generation) model as a chute.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/chutes/diffusion",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["chutes", "diffusion"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"node_selector\": { \"gpu_count\": 1 },\n  \"public\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c1a00004-0000-4000-8000-000000000001",
+      "name": "Images",
+      "description": {
+        "content": "Build, list, retrieve, and delete container images that chutes run from.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c1a00004-0000-4000-8000-000000000002",
+          "name": "List images.",
+          "request": {
+            "name": "List images.",
+            "description": {
+              "content": "List (and optionally filter/paginate) images.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/images/",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["images", ""],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00004-0000-4000-8000-000000000003",
+          "name": "Create an image.",
+          "request": {
+            "name": "Create an image.",
+            "description": {
+              "content": "Store image metadata and kick off an asynchronous image build.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/images/",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["images", ""],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"tag\": \"<string>\",\n  \"dockerfile\": \"<string>\",\n  \"public\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00004-0000-4000-8000-000000000004",
+          "name": "Get an image.",
+          "request": {
+            "name": "Get an image.",
+            "description": {
+              "content": "Load a single image by ID or name.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/images/:image_id_or_name",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["images", ":image_id_or_name"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "image_id_or_name",
+                  "value": "",
+                  "description": "The image ID or name to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1a00004-0000-4000-8000-000000000005",
+          "name": "Delete an image.",
+          "request": {
+            "name": "Delete an image.",
+            "description": {
+              "content": "Delete an image by ID or name:tag.",
+              "type": "text/plain"
+            },
+            "url": {
+              "raw": "https://api.chutes.ai/images/:image_id_or_name",
+              "protocol": "https",
+              "host": ["api", "chutes", "ai"],
+              "path": ["images", ":image_id_or_name"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "image_id_or_name",
+                  "value": "",
+                  "description": "The image ID or name:tag to delete."
+                }
+              ]
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.chutes.ai",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c1a0c0de-1234-4abc-9def-0123456789ab",
+    "name": "Chutes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. OpenAI-compatible inference at https://llm.chutes.ai/v1 and management at https://api.chutes.ai. Authenticate with a Bearer API key (cpk_).\n\nContact: https://chutes.ai/docs",
+      "type": "text/plain"
+    }
+  }
+}

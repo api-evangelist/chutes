@@ -1,0 +1,298 @@
+asyncapi: '2.6.0'
+id: 'urn:ai:chutes:llm:v1:chat-completions:sse'
+info:
+  title: Chutes Chat Completions Streaming (HTTP + SSE)
+  version: '1.0.0'
+  description: |
+    AsyncAPI 2.6 description of Chutes' **chat completion streaming** surface.
+
+    Chutes does not publish a public WebSocket API. The only asynchronous /
+    event-style transport documented at https://chutes.ai/docs/examples/llm-chat
+    is **HTTP Server-Sent Events (SSE)** delivered over the OpenAI-compatible
+    REST endpoint (`POST /chat/completions`) at https://llm.chutes.ai/v1 when the
+    request body sets `stream: true`. SSE is a one-way, server-to-client HTTP
+    streaming channel; it is **not** WebSocket.
+
+    Chutes is OpenAI-compatible, so the streamed events are `chat.completion.chunk`
+    objects terminated by a `data: [DONE]` sentinel, identical in shape to the
+    OpenAI streaming protocol. The request body itself (model, messages, etc.) is
+    modeled in the companion OpenAPI document at `openapi/chutes-openapi.yml`.
+
+    Chutes runs on Bittensor Subnet 64; an internal socket.chutes.ai service is
+    used for miner/validator coordination but is **not** a documented public API
+    and is not modeled here.
+  contact:
+    name: API Evangelist
+    email: kin@apievangelist.com
+    url: https://apievangelist.com
+  license:
+    name: API documentation - Chutes Terms of Service
+    url: https://chutes.ai/terms
+  x-transport-notes:
+    transport: HTTP Server-Sent Events (SSE)
+    protocol: https
+    direction: server-to-client (one-way)
+    mediaType: text/event-stream
+    triggeredBy: 'POST https://llm.chutes.ai/v1/chat/completions with request body { "stream": true }'
+    terminator: 'data: [DONE]'
+    notWebSocket: true
+    source: https://chutes.ai/docs/examples/llm-chat
+defaultContentType: text/event-stream
+servers:
+  chutes-llm:
+    url: llm.chutes.ai/v1
+    protocol: https
+    description: |
+      Chutes' OpenAI-compatible REST base. Chat completion streaming is delivered
+      as HTTP Server-Sent Events over this base when `stream: true` is set on the
+      JSON request body. AsyncAPI 2.6 does not define a dedicated SSE protocol
+      identifier; `https` is used here and the SSE transport is documented in
+      `info.x-transport-notes` and on each channel.
+    security:
+      - bearerAuth: []
+channels:
+  /chat/completions:
+    description: |
+      Chat completion SSE stream. The client opens this channel by issuing
+      `POST /chat/completions` with `Content-Type: application/json`,
+      `Accept: text/event-stream` (implied), and a JSON body containing
+      `stream: true`. The server responds with `Content-Type: text/event-stream`
+      and emits a sequence of `data:` lines, each carrying one JSON-serialized
+      `chat.completion.chunk` object, followed by a final `data: [DONE]` line.
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: '0.3.0'
+      x-sse:
+        mediaType: text/event-stream
+        eventField: 'data'
+        terminator: '[DONE]'
+    subscribe:
+      operationId: streamChatCompletionChunks
+      summary: Subscribe to streamed chat completion chunks (SSE).
+      description: |
+        After `POST /chat/completions` is issued with `stream: true`, the server
+        emits an ordered sequence of SSE `data:` events. Each `data:` line
+        either carries a JSON-serialized `ChatCompletionChunk` or the literal
+        sentinel `[DONE]` marking end of stream.
+      bindings:
+        http:
+          type: response
+          bindingVersion: '0.3.0'
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ChatCompletionChunk'
+          - $ref: '#/components/messages/StreamDone'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Chutes API key (cpk_)'
+      description: |
+        Chutes bearer token. Set the `Authorization: Bearer cpk_...` header on
+        the `POST /chat/completions` request that opens the SSE stream.
+  messages:
+    ChatCompletionChunk:
+      name: ChatCompletionChunk
+      title: Streamed chat completion chunk
+      summary: |
+        A single SSE `data:` event carrying one JSON `chat.completion.chunk`
+        object. Many of these are emitted per request, in order.
+      contentType: application/json
+      description: |
+        Sent as `data: {json}\n\n` on the SSE stream. The JSON object's
+        `object` field is always the literal string `chat.completion.chunk`.
+        Fields follow the OpenAI-compatible chat completion chunk schema.
+      payload:
+        $ref: '#/components/schemas/ChatCompletionChunk'
+      examples:
+        - name: openingChunk
+          summary: First chunk - establishes role
+          payload:
+            id: chatcmpl-abc123
+            object: chat.completion.chunk
+            created: 1750464000
+            model: deepseek-ai/DeepSeek-V3-0324
+            choices:
+              - index: 0
+                delta:
+                  role: assistant
+                  content: ''
+                logprobs: null
+                finish_reason: null
+        - name: contentChunk
+          summary: Token delta
+          payload:
+            id: chatcmpl-abc123
+            object: chat.completion.chunk
+            created: 1750464000
+            model: deepseek-ai/DeepSeek-V3-0324
+            choices:
+              - index: 0
+                delta:
+                  content: 'Hello'
+                logprobs: null
+                finish_reason: null
+        - name: finalChunk
+          summary: Final chunk - finish_reason set
+          payload:
+            id: chatcmpl-abc123
+            object: chat.completion.chunk
+            created: 1750464000
+            model: deepseek-ai/DeepSeek-V3-0324
+            choices:
+              - index: 0
+                delta: {}
+                logprobs: null
+                finish_reason: stop
+    StreamDone:
+      name: StreamDone
+      title: Stream terminator
+      summary: |
+        The literal SSE event `data: [DONE]` that marks end of stream. Not
+        JSON; the payload is the string `[DONE]`.
+      contentType: text/plain
+      description: |
+        Clients must stop reading the stream when this sentinel is observed.
+      payload:
+        $ref: '#/components/schemas/StreamDoneSentinel'
+      examples:
+        - name: done
+          summary: End-of-stream sentinel
+          payload: '[DONE]'
+  schemas:
+    StreamDoneSentinel:
+      type: string
+      enum:
+        - '[DONE]'
+      description: |
+        End-of-stream sentinel. The full SSE line is `data: [DONE]`. The
+        payload value modeled here is the string literal `[DONE]`.
+    ChatCompletionChunk:
+      type: object
+      description: |
+        Represents a streamed chunk of a chat completion response, in the
+        OpenAI-compatible `chat.completion.chunk` shape.
+      required:
+        - choices
+        - created
+        - id
+        - model
+        - object
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the chat completion. Each chunk has the same ID.
+        choices:
+          type: array
+          description: |
+            A list of chat completion choices. Can contain more than one element
+            if `n` is greater than 1.
+          items:
+            $ref: '#/components/schemas/ChatCompletionChunkChoice'
+        created:
+          type: integer
+          description: Unix timestamp (seconds) of when the chat completion was created. Each chunk has the same timestamp.
+        model:
+          type: string
+          description: The model used to generate the completion.
+        object:
+          type: string
+          enum:
+            - chat.completion.chunk
+          description: The object type, which is always `chat.completion.chunk`.
+        usage:
+          $ref: '#/components/schemas/CompletionUsage'
+    ChatCompletionChunkChoice:
+      type: object
+      required:
+        - delta
+        - finish_reason
+        - index
+      properties:
+        index:
+          type: integer
+          description: The index of the choice in the list of choices.
+        delta:
+          $ref: '#/components/schemas/ChatCompletionStreamResponseDelta'
+        logprobs:
+          type: object
+          nullable: true
+          description: Log probability information for the choice, if requested.
+        finish_reason:
+          type: string
+          nullable: true
+          enum:
+            - stop
+            - length
+            - tool_calls
+          description: |
+            Reason the model stopped generating tokens. `stop` for natural stop
+            or a provided stop sequence; `length` if `max_tokens` was reached;
+            `tool_calls` if the model called a tool. Null on all chunks except
+            the final content chunk.
+    ChatCompletionStreamResponseDelta:
+      type: object
+      description: A chat completion delta generated by streamed model responses.
+      properties:
+        role:
+          type: string
+          enum:
+            - system
+            - user
+            - assistant
+            - tool
+          description: |
+            Role of the author of this message. Typically only emitted on the
+            first chunk of a choice.
+        content:
+          type: string
+          nullable: true
+          description: The contents of the chunk message (token slice).
+        tool_calls:
+          type: array
+          description: |
+            Streaming tool-call fragments. Each item carries a delta of a single
+            tool call indexed by `index`.
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              id:
+                type: string
+              type:
+                type: string
+                enum:
+                  - function
+              function:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  arguments:
+                    type: string
+            required:
+              - index
+    CompletionUsage:
+      type: object
+      nullable: true
+      description: |
+        Usage statistics for the completion request. Sent on the final chunk
+        when usage reporting is enabled. Null on intermediate chunks.
+      required:
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
+      properties:
+        prompt_tokens:
+          type: integer
+          description: Number of tokens in the prompt.
+        completion_tokens:
+          type: integer
+          description: Number of tokens in the generated completion.
+        total_tokens:
+          type: integer
+          description: Total tokens used in the request (prompt + completion).
