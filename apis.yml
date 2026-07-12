@@ -107,6 +107,10 @@ apis:
     from; image creation stores metadata and kicks off an asynchronous build that
     is published to the Chutes registry.
 common:
+- type: DomainSecurity
+  url: security/chutes-domain-security.yml
+- type: Authentication
+  url: authentication/chutes-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/rayonlabs
 - type: LinkedIn

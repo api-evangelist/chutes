@@ -1,0 +1,15 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/chutes-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints
+    alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature,
+    X-Chutes-Nonce).'
+  sources:
+  - openapi/chutes-openapi.yml
