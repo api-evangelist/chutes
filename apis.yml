@@ -107,6 +107,8 @@ apis:
     from; image creation stores metadata and kicks off an asynchronous build that
     is published to the Chutes registry.
 common:
+- type: AgenticAccess
+  url: agentic-access/chutes-agentic-access.yml
 - type: DomainSecurity
   url: security/chutes-domain-security.yml
 - type: Authentication
