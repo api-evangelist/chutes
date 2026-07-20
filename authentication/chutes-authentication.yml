@@ -8,7 +8,7 @@ schemes:
 - name: bearerAuth
   type: http
   scheme: bearer
-  description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints
+  description: 'Chutes API key passed as `Authorization: Bearer [example key]`. Management endpoints
     alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature,
     X-Chutes-Nonce).'
   sources:
