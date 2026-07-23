@@ -1,0 +1,136 @@
+openapi: 3.0.1
+info:
+  title: Chutes Chat API
+  description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
+  termsOfService: https://chutes.ai/terms
+  contact:
+    name: Chutes Support
+    url: https://chutes.ai/docs
+  version: '1.0'
+servers:
+- url: https://llm.chutes.ai/v1
+  description: OpenAI-compatible LLM inference endpoint (chat completions, models).
+- url: https://api.chutes.ai
+  description: Management API for chutes and images.
+security:
+- bearerAuth: []
+tags:
+- name: Chat
+  description: OpenAI-compatible chat completions.
+paths:
+  /chat/completions:
+    post:
+      operationId: createChatCompletion
+      servers:
+      - url: https://llm.chutes.ai/v1
+      tags:
+      - Chat
+      summary: Create a chat completion.
+      description: 'OpenAI-compatible chat completions. Reachable for any model currently running on the Chutes network via the shared endpoint https://llm.chutes.ai/v1. Set `stream: true` to receive the response as Server-Sent Events.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateChatCompletionResponse'
+            text/event-stream:
+              schema:
+                type: string
+                description: 'Server-Sent Events stream of `chat.completion.chunk` objects when `stream` is true, terminated by `data: [DONE]`.'
+        '401':
+          description: Unauthorized - missing or invalid API key.
+        '422':
+          description: Validation error.
+        '429':
+          description: Too Many Requests - rate or quota limit exceeded.
+components:
+  schemas:
+    CreateChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: chat.completion
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                $ref: '#/components/schemas/ChatMessage'
+              finish_reason:
+                type: string
+        usage:
+          $ref: '#/components/schemas/Usage'
+    Usage:
+      type: object
+      properties:
+        prompt_tokens:
+          type: integer
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+    ChatMessage:
+      type: object
+      required:
+      - role
+      - content
+      properties:
+        role:
+          type: string
+          enum:
+          - system
+          - user
+          - assistant
+          - tool
+        content:
+          type: string
+    CreateChatCompletionRequest:
+      type: object
+      required:
+      - model
+      - messages
+      properties:
+        model:
+          type: string
+          description: Model identifier, e.g. `deepseek-ai/DeepSeek-V3-0324`.
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        max_tokens:
+          type: integer
+        temperature:
+          type: number
+          format: float
+        top_p:
+          type: number
+          format: float
+        stream:
+          type: boolean
+          default: false
+        stop:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature, X-Chutes-Nonce).'

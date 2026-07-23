@@ -1,0 +1,65 @@
+openapi: 3.0.1
+info:
+  title: Chutes Chat Models API
+  description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
+  termsOfService: https://chutes.ai/terms
+  contact:
+    name: Chutes Support
+    url: https://chutes.ai/docs
+  version: '1.0'
+servers:
+- url: https://llm.chutes.ai/v1
+  description: OpenAI-compatible LLM inference endpoint (chat completions, models).
+- url: https://api.chutes.ai
+  description: Management API for chutes and images.
+security:
+- bearerAuth: []
+tags:
+- name: Models
+  description: List models available on the Chutes network.
+paths:
+  /models:
+    get:
+      operationId: listModels
+      servers:
+      - url: https://llm.chutes.ai/v1
+      tags:
+      - Models
+      summary: List available models.
+      description: Lists the live models currently reachable on the Chutes network.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModelsResponse'
+components:
+  schemas:
+    Model:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: model
+        created:
+          type: integer
+        owned_by:
+          type: string
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature, X-Chutes-Nonce).'

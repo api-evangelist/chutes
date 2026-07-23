@@ -1,0 +1,380 @@
+openapi: 3.0.1
+info:
+  title: Chat Chutes API
+  description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
+  termsOfService: https://chutes.ai/terms
+  contact:
+    name: Chutes Support
+    url: https://chutes.ai/docs
+  version: '1.0'
+servers:
+- url: https://llm.chutes.ai/v1
+  description: OpenAI-compatible LLM inference endpoint (chat completions, models).
+- url: https://api.chutes.ai
+  description: Management API for chutes and images.
+security:
+- bearerAuth: []
+tags:
+- name: Chutes
+  description: Deploy, list, retrieve, update, and delete chutes.
+paths:
+  /chutes/:
+    get:
+      operationId: listChutes
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: List chutes.
+      description: List (and optionally filter/paginate) chutes.
+      parameters:
+      - name: include_public
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: template
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: image
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: slug
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChuteList'
+        '422':
+          description: Validation error.
+    post:
+      operationId: deployChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Deploy a chute.
+      description: Standard deploy from the Chutes development kit (CDK). Stores the chute code, image reference, node selector, and configuration, then schedules it onto suitable miner GPU capacity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployChuteRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chute'
+        '422':
+          description: Validation error.
+  /chutes/{chute_id_or_name}:
+    get:
+      operationId: getChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Get a chute.
+      description: Retrieve a chute's details by ID or name.
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chute'
+        '404':
+          description: Not found.
+    put:
+      operationId: updateChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Update a chute.
+      description: Update chute metadata such as readme, tagline, logo, and autoscaling settings.
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChuteRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chute'
+        '422':
+          description: Validation error.
+  /chutes/{chute_id}:
+    delete:
+      operationId: deleteChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Delete a chute.
+      description: Remove a chute by ID.
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found.
+  /chutes/code/{chute_id}:
+    get:
+      operationId: getChuteCode
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Get chute code.
+      description: Load a chute's source code by ID or name.
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /chutes/{chute_id}/hf_info:
+    get:
+      operationId: getChuteHfInfo
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Get Hugging Face info.
+      description: Return the Hugging Face repo_id and revision for a chute, used by miners to pre-download model weights.
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HfInfo'
+  /chutes/warmup/{chute_id_or_name}:
+    get:
+      operationId: warmupChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Warm up a chute.
+      description: Activate a chute (cold start) with an optional quick status check.
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /chutes/utilization:
+    get:
+      operationId: getChutesUtilization
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Get utilization.
+      description: Obtain utilization data from recent capacity logs.
+      responses:
+        '200':
+          description: OK
+  /chutes/vllm:
+    post:
+      operationId: deployVllmChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Deploy a templated vLLM chute.
+      description: Deploy a templated vLLM model as a chute.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployTemplateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chute'
+  /chutes/diffusion:
+    post:
+      operationId: deployDiffusionChute
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Chutes
+      summary: Deploy a templated diffusion chute.
+      description: Deploy a templated diffusion (image generation) model as a chute.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployTemplateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chute'
+components:
+  schemas:
+    DeployTemplateRequest:
+      type: object
+      required:
+      - model
+      properties:
+        model:
+          type: string
+          description: Hugging Face model repo to template-deploy.
+        node_selector:
+          type: object
+          additionalProperties: true
+        public:
+          type: boolean
+    HfInfo:
+      type: object
+      properties:
+        repo_id:
+          type: string
+        revision:
+          type: string
+    UpdateChuteRequest:
+      type: object
+      properties:
+        readme:
+          type: string
+        tagline:
+          type: string
+        logo:
+          type: string
+        scaling:
+          type: object
+          additionalProperties: true
+    ChuteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chute'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+    DeployChuteRequest:
+      type: object
+      required:
+      - name
+      - image
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+          description: Image ID or name:tag the chute runs from.
+        code:
+          type: string
+          description: Chute source code from the CDK.
+        node_selector:
+          type: object
+          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
+          additionalProperties: true
+        public:
+          type: boolean
+    Chute:
+      type: object
+      properties:
+        chute_id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        tagline:
+          type: string
+        readme:
+          type: string
+        image:
+          type: string
+        public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature, X-Chutes-Nonce).'

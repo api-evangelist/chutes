@@ -1,0 +1,182 @@
+openapi: 3.0.1
+info:
+  title: Chutes Chat Images API
+  description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
+  termsOfService: https://chutes.ai/terms
+  contact:
+    name: Chutes Support
+    url: https://chutes.ai/docs
+  version: '1.0'
+servers:
+- url: https://llm.chutes.ai/v1
+  description: OpenAI-compatible LLM inference endpoint (chat completions, models).
+- url: https://api.chutes.ai
+  description: Management API for chutes and images.
+security:
+- bearerAuth: []
+tags:
+- name: Images
+  description: Build, list, retrieve, and delete container images.
+paths:
+  /images/:
+    get:
+      operationId: listImages
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Images
+      summary: List images.
+      description: List (and optionally filter/paginate) images.
+      parameters:
+      - name: include_public
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tag
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageList'
+        '422':
+          description: Validation error.
+    post:
+      operationId: createImage
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Images
+      summary: Create an image.
+      description: Store image metadata in the database and kick off an asynchronous image build that is published to the Chutes registry.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImageRequest'
+      responses:
+        '202':
+          description: Accepted - build started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '422':
+          description: Validation error.
+  /images/{image_id_or_name}:
+    get:
+      operationId: getImage
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Images
+      summary: Get an image.
+      description: Load a single image by ID or name.
+      parameters:
+      - name: image_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '422':
+          description: Validation error.
+    delete:
+      operationId: deleteImage
+      servers:
+      - url: https://api.chutes.ai
+      tags:
+      - Images
+      summary: Delete an image.
+      description: Delete an image by ID or name:tag.
+      parameters:
+      - name: image_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+        '422':
+          description: Validation error.
+components:
+  schemas:
+    CreateImageRequest:
+      type: object
+      required:
+      - name
+      - tag
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+        dockerfile:
+          type: string
+          description: Dockerfile or build definition for the image.
+        public:
+          type: boolean
+    ImageList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+    Image:
+      type: object
+      properties:
+        image_id:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+        status:
+          type: string
+          description: Build status (e.g. building, built, error).
+        public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature, X-Chutes-Nonce).'
