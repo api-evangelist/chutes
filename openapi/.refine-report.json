@@ -1,0 +1,20 @@
+{
+  "provider": "chutes",
+  "sources": [
+    "chutes-chat-api-openapi.yml",
+    "chutes-chutes-api-openapi.yml",
+    "chutes-images-api-openapi.yml",
+    "chutes-models-api-openapi.yml"
+  ],
+  "outputs": [
+    "chutes-chat-api-openapi.yml",
+    "chutes-chutes-api-openapi.yml",
+    "chutes-images-api-openapi.yml",
+    "chutes-models-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
