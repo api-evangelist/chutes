@@ -1,0 +1,240 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Chat Chutes API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chutes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List chutes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/",
+            "params": [
+              {
+                "name": "include_public",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "template",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "image",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "slug",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List (and optionally filter/paginate) chutes."
+        },
+        {
+          "info": {
+            "name": "Deploy a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://llm.chutes.ai/v1/chutes/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Standard deploy from the Chutes development kit (CDK). Stores the chute code, image reference, node selector, and configuration, then schedules it onto suitable miner GPU capacity."
+        },
+        {
+          "info": {
+            "name": "Get a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/:chute_id_or_name",
+            "params": [
+              {
+                "name": "chute_id_or_name",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a chute's details by ID or name."
+        },
+        {
+          "info": {
+            "name": "Update a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://llm.chutes.ai/v1/chutes/:chute_id_or_name",
+            "params": [
+              {
+                "name": "chute_id_or_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update chute metadata such as readme, tagline, logo, and autoscaling settings."
+        },
+        {
+          "info": {
+            "name": "Delete a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://llm.chutes.ai/v1/chutes/:chute_id",
+            "params": [
+              {
+                "name": "chute_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Remove a chute by ID."
+        },
+        {
+          "info": {
+            "name": "Get chute code.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/code/:chute_id",
+            "params": [
+              {
+                "name": "chute_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Load a chute's source code by ID or name."
+        },
+        {
+          "info": {
+            "name": "Get Hugging Face info.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/:chute_id/hf_info",
+            "params": [
+              {
+                "name": "chute_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Return the Hugging Face repo_id and revision for a chute, used by miners to pre-download model weights."
+        },
+        {
+          "info": {
+            "name": "Warm up a chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/warmup/:chute_id_or_name",
+            "params": [
+              {
+                "name": "chute_id_or_name",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Activate a chute (cold start) with an optional quick status check."
+        },
+        {
+          "info": {
+            "name": "Get utilization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://llm.chutes.ai/v1/chutes/utilization"
+          },
+          "docs": "Obtain utilization data from recent capacity logs."
+        },
+        {
+          "info": {
+            "name": "Deploy a templated vLLM chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://llm.chutes.ai/v1/chutes/vllm",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deploy a templated vLLM model as a chute."
+        },
+        {
+          "info": {
+            "name": "Deploy a templated diffusion chute.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://llm.chutes.ai/v1/chutes/diffusion",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deploy a templated diffusion (image generation) model as a chute."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
