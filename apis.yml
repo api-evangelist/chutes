@@ -23,6 +23,13 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/chutes.png
 tags:
+- Artificial Intelligence
+- LLM
+- Inference
+- Serverless
+- GPU
+- Bittensor
+tags_raw:
 - AI
 - LLM
 - Inference
@@ -95,6 +102,8 @@ apis:
   humanURL: https://chutes.ai/docs/examples/llm-chat
   baseURL: https://llm.chutes.ai/v1
   tags:
+  - Image
+  tags_raw:
   - Images
   properties:
   - type: OpenAPI
