@@ -8,6 +8,18 @@ description: Chutes is a permissionless, serverless AI compute platform that let
   endpoint at llm.chutes.ai/v1 for hundreds of open-source LLMs, plus a management
   REST API at api.chutes.ai for building images and deploying, listing, and operating
   chutes.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
