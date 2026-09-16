@@ -2,11 +2,10 @@ aid: chutes
 url: https://raw.githubusercontent.com/api-evangelist/chutes/refs/heads/main/apis.yml
 name: Chutes
 kind: company
-description: Chutes is a permissionless, serverless AI compute platform that lets
-  developers deploy and run any model as an autoscaling "chute" on decentralized GPU
-  capacity (Bittensor Subnet 64). It exposes a single OpenAI-compatible inference
-  endpoint at llm.chutes.ai/v1 for hundreds of open-source LLMs, plus a management
-  REST API at api.chutes.ai for building images and deploying, listing, and operating
+description: Chutes is a permissionless, serverless AI compute platform that lets developers deploy and
+  run any model as an autoscaling "chute" on decentralized GPU capacity (Bittensor Subnet 64). It exposes
+  a single OpenAI-compatible inference endpoint at llm.chutes.ai/v1 for hundreds of open-source LLMs,
+  plus a management REST API at api.chutes.ai for building images and deploying, listing, and operating
   chutes.
 deliveryModel:
   model: saas
@@ -50,7 +49,7 @@ tags_raw:
 - GPU
 - Bittensor
 created: '2026-06-21'
-modified: '2026-06-21'
+modified: '2026-09-16'
 specificationVersion: '0.23'
 apis:
 - aid: chutes:chutes-chat-api
@@ -82,7 +81,7 @@ apis:
   - type: APIReference
     url: https://chutes.ai/docs/api-reference/images
 - aid: chutes:chutes-chutes-api
-  name: Chutes Chutes API
+  name: Chutes API
   description: Deploy, list, retrieve, update, and delete chutes.
   humanURL: https://chutes.ai/docs/examples/llm-chat
   baseURL: https://llm.chutes.ai/v1
