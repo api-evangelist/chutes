@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Chat Chutes API
+  title: Chutes API
   description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
   termsOfService: https://chutes.ai/terms
   contact:
@@ -25,7 +25,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: List chutes.
+      summary: List chutes
       description: List (and optionally filter/paginate) chutes.
       parameters:
       - name: include_public
@@ -78,7 +78,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Deploy a chute.
+      summary: Deploy a chute
       description: Standard deploy from the Chutes development kit (CDK). Stores the chute code, image reference, node selector, and configuration, then schedules it onto suitable miner GPU capacity.
       requestBody:
         required: true
@@ -102,7 +102,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Get a chute.
+      summary: Get a chute
       description: Retrieve a chute's details by ID or name.
       parameters:
       - name: chute_id_or_name
@@ -125,7 +125,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Update a chute.
+      summary: Update a chute
       description: Update chute metadata such as readme, tagline, logo, and autoscaling settings.
       parameters:
       - name: chute_id_or_name
@@ -155,7 +155,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Delete a chute.
+      summary: Delete a chute
       description: Remove a chute by ID.
       parameters:
       - name: chute_id
@@ -175,7 +175,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Get chute code.
+      summary: Get chute code
       description: Load a chute's source code by ID or name.
       parameters:
       - name: chute_id
@@ -197,7 +197,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Get Hugging Face info.
+      summary: Get Hugging Face info
       description: Return the Hugging Face repo_id and revision for a chute, used by miners to pre-download model weights.
       parameters:
       - name: chute_id
@@ -219,7 +219,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Warm up a chute.
+      summary: Warm up a chute
       description: Activate a chute (cold start) with an optional quick status check.
       parameters:
       - name: chute_id_or_name
@@ -237,7 +237,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Get utilization.
+      summary: Get utilization
       description: Obtain utilization data from recent capacity logs.
       responses:
         '200':
@@ -249,7 +249,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Deploy a templated vLLM chute.
+      summary: Deploy a templated vLLM chute
       description: Deploy a templated vLLM model as a chute.
       requestBody:
         required: true
@@ -271,7 +271,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Deploy a templated diffusion chute.
+      summary: Deploy a templated diffusion chute
       description: Deploy a templated diffusion (image generation) model as a chute.
       requestBody:
         required: true
@@ -301,6 +301,26 @@ components:
           additionalProperties: true
         public:
           type: boolean
+    Chute:
+      type: object
+      properties:
+        chute_id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        tagline:
+          type: string
+        readme:
+          type: string
+        image:
+          type: string
+        public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
     HfInfo:
       type: object
       properties:
@@ -353,26 +373,6 @@ components:
           additionalProperties: true
         public:
           type: boolean
-    Chute:
-      type: object
-      properties:
-        chute_id:
-          type: string
-        name:
-          type: string
-        slug:
-          type: string
-        tagline:
-          type: string
-        readme:
-          type: string
-        image:
-          type: string
-        public:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     bearerAuth:
       type: http

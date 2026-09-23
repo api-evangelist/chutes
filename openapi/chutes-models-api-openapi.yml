@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Chutes Chat Models API
+  title: Chutes Models API
   description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
   termsOfService: https://chutes.ai/terms
   contact:
@@ -25,7 +25,7 @@ paths:
       - url: https://llm.chutes.ai/v1
       tags:
       - Models
-      summary: List available models.
+      summary: List available models
       description: Lists the live models currently reachable on the Chutes network.
       responses:
         '200':
@@ -36,6 +36,16 @@ paths:
                 $ref: '#/components/schemas/ListModelsResponse'
 components:
   schemas:
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
     Model:
       type: object
       properties:
@@ -48,16 +58,6 @@ components:
           type: integer
         owned_by:
           type: string
-    ListModelsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Model'
   securitySchemes:
     bearerAuth:
       type: http

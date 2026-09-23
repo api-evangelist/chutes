@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Chutes Chat Images API
+  title: Chutes Images API
   description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
   termsOfService: https://chutes.ai/terms
   contact:
@@ -25,7 +25,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Images
-      summary: List images.
+      summary: List images
       description: List (and optionally filter/paginate) images.
       parameters:
       - name: include_public
@@ -68,7 +68,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Images
-      summary: Create an image.
+      summary: Create an image
       description: Store image metadata in the database and kick off an asynchronous image build that is published to the Chutes registry.
       requestBody:
         required: true
@@ -92,7 +92,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Images
-      summary: Get an image.
+      summary: Get an image
       description: Load a single image by ID or name.
       parameters:
       - name: image_id_or_name
@@ -115,7 +115,7 @@ paths:
       - url: https://api.chutes.ai
       tags:
       - Images
-      summary: Delete an image.
+      summary: Delete an image
       description: Delete an image by ID or name:tag.
       parameters:
       - name: image_id_or_name
@@ -130,6 +130,23 @@ paths:
           description: Validation error.
 components:
   schemas:
+    Image:
+      type: object
+      properties:
+        image_id:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+        status:
+          type: string
+          description: Build status (e.g. building, built, error).
+        public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
     CreateImageRequest:
       type: object
       required:
@@ -158,23 +175,6 @@ components:
           type: integer
         limit:
           type: integer
-    Image:
-      type: object
-      properties:
-        image_id:
-          type: string
-        name:
-          type: string
-        tag:
-          type: string
-        status:
-          type: string
-          description: Build status (e.g. building, built, error).
-        public:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
   securitySchemes:
     bearerAuth:
       type: http
