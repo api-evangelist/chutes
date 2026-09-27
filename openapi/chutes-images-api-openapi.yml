@@ -130,6 +130,21 @@ paths:
           description: Validation error.
 components:
   schemas:
+    CreateImageRequest:
+      type: object
+      required:
+      - name
+      - tag
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+        dockerfile:
+          type: string
+          description: Dockerfile or build definition for the image.
+        public:
+          type: boolean
     Image:
       type: object
       properties:
@@ -147,21 +162,6 @@ components:
         created_at:
           type: string
           format: date-time
-    CreateImageRequest:
-      type: object
-      required:
-      - name
-      - tag
-      properties:
-        name:
-          type: string
-        tag:
-          type: string
-        dockerfile:
-          type: string
-          description: Dockerfile or build definition for the image.
-        public:
-          type: boolean
     ImageList:
       type: object
       properties:

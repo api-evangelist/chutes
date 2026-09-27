@@ -41,6 +41,7 @@ tags:
 - Serverless
 - GPU
 - Bittensor
+- Real-Time
 tags_raw:
 - AI
 - LLM
@@ -48,6 +49,7 @@ tags_raw:
 - Serverless
 - GPU
 - Bittensor
+- Real-Time
 created: '2026-06-21'
 modified: '2026-09-16'
 specificationVersion: '0.23'

@@ -52,6 +52,31 @@ paths:
           description: Too Many Requests - rate or quota limit exceeded.
 components:
   schemas:
+    CreateChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: chat.completion
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                $ref: '#/components/schemas/ChatMessage'
+              finish_reason:
+                type: string
+        usage:
+          $ref: '#/components/schemas/Usage'
     CreateChatCompletionRequest:
       type: object
       required:
@@ -80,15 +105,6 @@ components:
           type: array
           items:
             type: string
-    Usage:
-      type: object
-      properties:
-        prompt_tokens:
-          type: integer
-        completion_tokens:
-          type: integer
-        total_tokens:
-          type: integer
     ChatMessage:
       type: object
       required:
@@ -104,31 +120,15 @@ components:
           - tool
         content:
           type: string
-    CreateChatCompletionResponse:
+    Usage:
       type: object
       properties:
-        id:
-          type: string
-        object:
-          type: string
-          example: chat.completion
-        created:
+        prompt_tokens:
           type: integer
-        model:
-          type: string
-        choices:
-          type: array
-          items:
-            type: object
-            properties:
-              index:
-                type: integer
-              message:
-                $ref: '#/components/schemas/ChatMessage'
-              finish_reason:
-                type: string
-        usage:
-          $ref: '#/components/schemas/Usage'
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
   securitySchemes:
     bearerAuth:
       type: http

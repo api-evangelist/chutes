@@ -288,16 +288,23 @@ paths:
                 $ref: '#/components/schemas/Chute'
 components:
   schemas:
-    DeployTemplateRequest:
+    DeployChuteRequest:
       type: object
       required:
-      - model
+      - name
+      - image
       properties:
-        model:
+        name:
           type: string
-          description: Hugging Face model repo to template-deploy.
+        image:
+          type: string
+          description: Image ID or name:tag the chute runs from.
+        code:
+          type: string
+          description: Chute source code from the CDK.
         node_selector:
           type: object
+          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
           additionalProperties: true
         public:
           type: boolean
@@ -321,13 +328,6 @@ components:
         created_at:
           type: string
           format: date-time
-    HfInfo:
-      type: object
-      properties:
-        repo_id:
-          type: string
-        revision:
-          type: string
     UpdateChuteRequest:
       type: object
       properties:
@@ -353,26 +353,26 @@ components:
           type: integer
         limit:
           type: integer
-    DeployChuteRequest:
+    DeployTemplateRequest:
       type: object
       required:
-      - name
-      - image
+      - model
       properties:
-        name:
+        model:
           type: string
-        image:
-          type: string
-          description: Image ID or name:tag the chute runs from.
-        code:
-          type: string
-          description: Chute source code from the CDK.
+          description: Hugging Face model repo to template-deploy.
         node_selector:
           type: object
-          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
           additionalProperties: true
         public:
           type: boolean
+    HfInfo:
+      type: object
+      properties:
+        repo_id:
+          type: string
+        revision:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http
