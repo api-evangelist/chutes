@@ -288,26 +288,38 @@ paths:
                 $ref: '#/components/schemas/Chute'
 components:
   schemas:
-    DeployChuteRequest:
+    DeployTemplateRequest:
       type: object
       required:
-      - name
-      - image
+      - model
       properties:
-        name:
+        model:
           type: string
-        image:
-          type: string
-          description: Image ID or name:tag the chute runs from.
-        code:
-          type: string
-          description: Chute source code from the CDK.
+          description: Hugging Face model repo to template-deploy.
         node_selector:
           type: object
-          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
           additionalProperties: true
         public:
           type: boolean
+    UpdateChuteRequest:
+      type: object
+      properties:
+        readme:
+          type: string
+        tagline:
+          type: string
+        logo:
+          type: string
+        scaling:
+          type: object
+          additionalProperties: true
+    HfInfo:
+      type: object
+      properties:
+        repo_id:
+          type: string
+        revision:
+          type: string
     Chute:
       type: object
       properties:
@@ -328,18 +340,26 @@ components:
         created_at:
           type: string
           format: date-time
-    UpdateChuteRequest:
+    DeployChuteRequest:
       type: object
+      required:
+      - name
+      - image
       properties:
-        readme:
+        name:
           type: string
-        tagline:
+        image:
           type: string
-        logo:
+          description: Image ID or name:tag the chute runs from.
+        code:
           type: string
-        scaling:
+          description: Chute source code from the CDK.
+        node_selector:
           type: object
+          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
           additionalProperties: true
+        public:
+          type: boolean
     ChuteList:
       type: object
       properties:
@@ -353,26 +373,6 @@ components:
           type: integer
         limit:
           type: integer
-    DeployTemplateRequest:
-      type: object
-      required:
-      - model
-      properties:
-        model:
-          type: string
-          description: Hugging Face model repo to template-deploy.
-        node_selector:
-          type: object
-          additionalProperties: true
-        public:
-          type: boolean
-    HfInfo:
-      type: object
-      properties:
-        repo_id:
-          type: string
-        revision:
-          type: string
   securitySchemes:
     bearerAuth:
       type: http
