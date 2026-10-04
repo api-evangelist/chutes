@@ -54,34 +54,6 @@ created: '2026-06-21'
 modified: '2026-09-16'
 specificationVersion: '0.23'
 apis:
-- aid: chutes:chutes-chat-api
-  name: Chutes Chat API
-  description: OpenAI-compatible chat completions.
-  humanURL: https://chutes.ai/docs/examples/llm-chat
-  baseURL: https://llm.chutes.ai/v1
-  tags:
-  - Chat
-  properties:
-  - type: OpenAPI
-    url: openapi/chutes-chat-api-openapi.yml
-  - type: Documentation
-    url: https://chutes.ai/docs/examples/llm-chat
-  - type: APIReference
-    url: https://chutes.ai/docs/api-reference/overview
-  - type: AsyncAPI
-    url: asyncapi/chutes-asyncapi.yml
-  - type: Postman
-    url: collections/chutes.postman_collection.json
-  - type: Documentation
-    url: https://chutes.ai/docs/core-concepts/cords
-  - type: Documentation
-    url: https://chutes.ai/docs/getting-started/running-a-chute
-  - type: APIReference
-    url: https://chutes.ai/docs/api-reference/chutes
-  - type: Documentation
-    url: https://chutes.ai/docs/core-concepts/templates
-  - type: APIReference
-    url: https://chutes.ai/docs/api-reference/images
 - aid: chutes:chutes-chutes-api
   name: Chutes API
   description: Deploy, list, retrieve, update, and delete chutes.
@@ -150,6 +122,34 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/chutes-models-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-chat-completions-api
+  name: Chutes Chat Completions API
+  description: OpenAI-compatible chat completions.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Chat Completions
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-chat-completions-api-openapi.yml
   - type: Documentation
     url: https://chutes.ai/docs/examples/llm-chat
   - type: APIReference

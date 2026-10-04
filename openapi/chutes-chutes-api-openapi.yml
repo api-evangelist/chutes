@@ -301,25 +301,19 @@ components:
           additionalProperties: true
         public:
           type: boolean
-    UpdateChuteRequest:
+    ChuteList:
       type: object
       properties:
-        readme:
-          type: string
-        tagline:
-          type: string
-        logo:
-          type: string
-        scaling:
-          type: object
-          additionalProperties: true
-    HfInfo:
-      type: object
-      properties:
-        repo_id:
-          type: string
-        revision:
-          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chute'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
     Chute:
       type: object
       properties:
@@ -340,6 +334,13 @@ components:
         created_at:
           type: string
           format: date-time
+    HfInfo:
+      type: object
+      properties:
+        repo_id:
+          type: string
+        revision:
+          type: string
     DeployChuteRequest:
       type: object
       required:
@@ -360,19 +361,18 @@ components:
           additionalProperties: true
         public:
           type: boolean
-    ChuteList:
+    UpdateChuteRequest:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Chute'
-        total:
-          type: integer
-        page:
-          type: integer
-        limit:
-          type: integer
+        readme:
+          type: string
+        tagline:
+          type: string
+        logo:
+          type: string
+        scaling:
+          type: object
+          additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http

@@ -130,6 +130,19 @@ paths:
           description: Validation error.
 components:
   schemas:
+    ImageList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
     Image:
       type: object
       properties:
@@ -147,19 +160,6 @@ components:
         created_at:
           type: string
           format: date-time
-    ImageList:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        total:
-          type: integer
-        page:
-          type: integer
-        limit:
-          type: integer
     CreateImageRequest:
       type: object
       required:
