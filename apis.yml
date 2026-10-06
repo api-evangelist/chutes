@@ -51,7 +51,7 @@ tags_raw:
 - Bittensor
 - Real-Time
 created: '2026-06-21'
-modified: '2026-09-16'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 apis:
 - aid: chutes:chutes-chutes-api
@@ -169,6 +169,8 @@ apis:
   - type: APIReference
     url: https://chutes.ai/docs/api-reference/images
 common:
+- url: https://chutes.ai/news/rss.xml
+  type: BlogRSS
 - type: AgenticAccess
   url: agentic-access/chutes-agentic-access.yml
 - type: DomainSecurity
