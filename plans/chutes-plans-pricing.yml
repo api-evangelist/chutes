@@ -1,182 +1,85 @@
-# Provenance stamped 2026-10-07 (roadmap#943): written by an API Evangelist sweep (dated 2026-06-21 by the file itself), not
-# harvested from the provider. `method: generated` so the economics campaign may replace it with a
-# dated, verbatim transcription; every figure below is unverified until it does.
-method: generated
-generated: '2026-06-21'
-specification: API Commons Plans
-specificationVersion: '0.1'
-schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
-provider: Chutes
-providerId: chutes
-created: '2026-06-21'
-modified: '2026-06-21'
-reconciled: false
-tags:
-- AI
-- LLM
-- Inference
-- Serverless
-- GPU
-- Bittensor
-- Plans
-description: >-
-  Chutes uses transparent, pay-as-you-go pricing with no required subscription.
-  Public LLM inference is billed per-token at per-model rates (some open-source
-  models are free, others heavily discounted because compute is subsidized by
-  Bittensor TAO incentives on Subnet 64). Private chutes are dedicated, deployed
-  on confidential (TEE) GPU capacity and billed per-second of runtime plus a
-  one-time deployment fee. Optional monthly plans add a fixed budget plus a
-  discount on per-token rates beyond the included quota. Specific per-model rates
-  fluctuate with subnet economics and are not reconciled in this artifact.
-notes: >-
-  Representative rates as published on the Chutes pricing page; values are
-  snapshots and change with Bittensor subnet economics. Verify the current model
-  catalog, free-tier thresholds, and GPU hourly rates against the live pricing
-  page during reconciliation.
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-07'
+method: searched
+source: https://chutes.ai/pricing
 sources:
 - https://chutes.ai/pricing
-- https://chutes.ai/docs
+provenance:
+  tool: all/0-working/economics/harvest_pricing.py
+  run: 20261007T112025
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: per-call
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-07'
+  managed_tier: Plus
+published: true
+note: Per-token model pricing in USD (or TAO), plus per-second GPU private deployments at $1.80/hour with
+  a one-time fee of 3× hourly rate; optional monthly Plus/Pro plans and negotiated Enterprise tier.
+plan_count: 8
+currency: USD
 plans:
-- id: chutes-pay-as-you-go
-  name: Pay-as-you-go (Public Inference)
-  type: usage
-  description: >-
-    Per-token, per-model inference across hundreds of open-source models at the
-    shared llm.chutes.ai/v1 endpoint, with no monthly minimum and no markup tier.
-  entries:
-  - label: Budget LLM (e.g. Mistral-Nemo-Instruct)
-    name: llm_budget
-    type: usage
-    metric: tokens
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1000000
-    price: ~$0.0245 input / ~$0.0978 output per 1M (varies by model)
-    userMultiplied: false
-  - label: Mid-range LLM (e.g. Gemma / Qwen3-32B)
-    name: llm_mid
-    type: usage
-    metric: tokens
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1000000
-    price: ~$0.10-$0.42 per 1M (varies by model)
-    userMultiplied: false
-  - label: Premium LLM (e.g. DeepSeek-V3.2 / GLM-5.2)
-    name: llm_premium
-    type: usage
-    metric: tokens
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1000000
-    price: up to ~$1.40 input / ~$4.40 output per 1M (varies by model)
-    userMultiplied: false
-  - label: Free / subsidized models
-    name: llm_free
-    type: usage
-    metric: tokens
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1000000
-    price: $0 for select models (subsidized by Bittensor TAO incentives)
-    userMultiplied: false
-  elements:
-  - name: Chat Completions
-  - name: Models Listing
-  - name: Image / Diffusion (cords)
-- id: chutes-private
-  name: Private Chutes (Self-Serve Deployment)
-  type: usage
-  description: >-
-    Dedicated AI workloads deployed on verified self-serve confidential (TEE) GPU
-    capacity, billed per-second while running, with automatic idle shutdown.
-  entries:
-  - label: GPU Runtime (e.g. RTX Pro 6000)
-    name: gpu_runtime
-    type: usage
-    metric: seconds
-    limit: -1
-    timeFrame: usage
-    geo: global
-    unit: 3600
-    price: ~$1.80 per hour (billed per-second; varies by GPU)
-    userMultiplied: false
-  - label: Deployment Fee
-    name: deployment_fee
-    type: flat
-    metric: deploys
-    limit: -1
-    timeFrame: usage
-    geo: global
-    unit: 1
-    price: one-time ~$5.40 (3x hourly rate) per deployment
-    userMultiplied: false
-  elements:
-  - name: Dedicated Chute Deployment
-  - name: Confidential (TEE) GPU
-- id: chutes-plus
-  name: Plus
-  type: subscription
-  description: >-
-    Optional monthly plan providing a fixed budget plus a discount on per-token
-    rates beyond the included quota.
-  entries:
-  - label: Plus Monthly
-    name: plus_monthly
-    type: flat
-    metric: subscription
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: ~$10/month, ~6% discount on per-token rates beyond quota
-    userMultiplied: false
-  elements:
-  - name: Monthly Budget
-  - name: Token Discount
-- id: chutes-pro
-  name: Pro
-  type: subscription
-  description: >-
-    Optional monthly plan with a larger fixed budget and a higher discount on
-    per-token rates beyond the included quota.
-  entries:
-  - label: Pro Monthly
-    name: pro_monthly
-    type: flat
-    metric: subscription
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: ~$20/month, ~10% discount on per-token rates beyond quota
-    userMultiplied: false
-  elements:
-  - name: Monthly Budget
-  - name: Token Discount
-- id: chutes-enterprise
-  name: Enterprise
-  type: enterprise
-  description: >-
-    Volume discounts and negotiated terms for large workloads. Contact Chutes.
-  entries:
-  - label: Enterprise Agreement
-    name: enterprise
-    type: flat
-    metric: contract
-    limit: -1
-    timeFrame: year
-    geo: global
-    unit: 1
-    price: contact sales
-    userMultiplied: false
-  elements:
-  - name: Volume Discounts
-  - name: Dedicated Capacity
-maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+- name: Plus
+  price_text: $10 / mo
+  price: 10
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: Bundled daily quota
+  overage: 6% off PAYG rates beyond the quota
+- name: Pro
+  price_text: $20 / mo
+  price: 20
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: Larger daily quota
+  overage: 10% off PAYG rates beyond the quota
+- name: Enterprise
+  price_text: Talk to sales
+  period: none
+  included_quota: Volume discounts, custom rate limits, dedicated support.
+- name: Self-serve TEE GPU — RTX Pro 6000
+  price_text: $1.80 / hour
+  price: 1.8
+  currency: USD
+  period: per-use
+  unit: GPU hour
+  included_quota: 96 GB · Blackwell
+- name: One-time deployment fee
+  price_text: $5.40
+  price: 5.4
+  currency: USD
+  period: one-time
+  unit: deployment
+  included_quota: = 3× hourly rate
+- name: Kimi-K3 (moonshotai/Kimi-K3-TEE)
+  price_text: $3.00 per 1M tokens
+  price: 3.0
+  currency: USD
+  period: per-use
+  unit: 1M input tokens
+  included_quota: Context 1.0M
+  overage: Output $15.00 per 1M tokens
+- name: DeepSeek-V3.2
+  price_text: $1.00 per 1M tokens
+  price: 1.0
+  currency: USD
+  period: per-use
+  unit: 1M input tokens
+  included_quota: Context 131K
+  overage: Output $1.00 per 1M tokens
+- name: Mistral-Nemo-Instruct-2407
+  price_text: $0.0245 per 1M tokens
+  price: 0.0245
+  currency: USD
+  period: per-use
+  unit: 1M input tokens
+  included_quota: Context 131K
+  overage: Output $0.0978 per 1M tokens
+rate_limit_statements:
+- Bundled daily quota
+- Larger daily quota
+- custom rate limits
