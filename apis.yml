@@ -169,6 +169,8 @@ apis:
   - type: APIReference
     url: https://chutes.ai/docs/api-reference/images
 common:
+- type: Pricing
+  url: https://chutes.ai/pricing
 - url: https://chutes.ai/news/rss.xml
   type: BlogRSS
 - type: AgenticAccess
