@@ -83,3 +83,76 @@ rate_limit_statements:
 - Bundled daily quota
 - Larger daily quota
 - custom rate limits
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units:
+  - compute
+  - object
+  - token
+  plans:
+  - name: Plus
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Pro
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Self-serve TEE GPU — RTX Pro 6000
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: One-time deployment fee
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - object
+    periods:
+    - one-time
+  - name: Kimi-K3 (moonshotai/Kimi-K3-TEE)
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: DeepSeek-V3.2
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: Mistral-Nemo-Instruct-2407
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
