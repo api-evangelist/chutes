@@ -1,0 +1,44 @@
+edges:
+- partner_name: OpenRouter
+  partner: openrouter
+  partner_match: router
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: system-coverage
+  evidence: https://openrouter.ai/api/v1/models
+  coverage_role:
+  - inference-host
+  router_signals:
+    inference-host:
+      models: 6
+      router_ids:
+      - Chutes
+      tools_share: 0.83
+      structured_output_share: 1.0
+  matched_by: verified-token-table
+  detected_by: sweep-model-routing.py
+  first_seen: '2026-10-13'
+- partner_name: OpenAI
+  partner: openai
+  partner_match: domain
+  type: contract
+  channel: provider-built
+  relationship: compatible
+  direction: provider-built
+  evidence: https://github.com/api-evangelist/chutes/blob/main/openapi/chutes-chat-completions-api-openapi.yml#L4
+  contract_reference:
+    repo: chutes
+    spec_file: chutes-chat-completions-api-openapi.yml
+    property: description
+    value: OpenAI-compatible
+    note: 'chutes declares OpenAI compatibility: ''description: ''Specification of the Chutes API. Chutes is a permissionless,
+      serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: '''
+    detected_by: sweep-model-routing.py
+    detected: '2026-10-13'
+  detected_by: sweep-model-routing.py
+  first_seen: '2026-10-13'
+generated: '2026-10-13'
+method: searched
+checked:
+- https://openrouter.ai/api/v1/models
