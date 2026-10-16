@@ -35,7 +35,7 @@ edges:
     note: 'chutes declares OpenAI compatibility: ''description: ''Specification of the Chutes API. Chutes is a permissionless,
       serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: '''
     detected_by: sweep-model-routing.py
-    detected: '2026-10-13'
+    detected: '2026-10-15'
   detected_by: sweep-model-routing.py
   first_seen: '2026-10-13'
 generated: '2026-10-13'
