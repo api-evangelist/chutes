@@ -36,6 +36,16 @@ paths:
                 $ref: '#/components/schemas/ListModelsResponse'
 components:
   schemas:
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
     Model:
       type: object
       properties:
@@ -48,16 +58,6 @@ components:
           type: integer
         owned_by:
           type: string
-    ListModelsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Model'
   securitySchemes:
     bearerAuth:
       type: http

@@ -288,6 +288,65 @@ paths:
                 $ref: '#/components/schemas/Chute'
 components:
   schemas:
+    HfInfo:
+      type: object
+      properties:
+        repo_id:
+          type: string
+        revision:
+          type: string
+    Chute:
+      type: object
+      properties:
+        chute_id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        tagline:
+          type: string
+        readme:
+          type: string
+        image:
+          type: string
+        public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    UpdateChuteRequest:
+      type: object
+      properties:
+        readme:
+          type: string
+        tagline:
+          type: string
+        logo:
+          type: string
+        scaling:
+          type: object
+          additionalProperties: true
+    DeployChuteRequest:
+      type: object
+      required:
+      - name
+      - image
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+          description: Image ID or name:tag the chute runs from.
+        code:
+          type: string
+          description: Chute source code from the CDK.
+        node_selector:
+          type: object
+          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
+          additionalProperties: true
+        public:
+          type: boolean
     DeployTemplateRequest:
       type: object
       required:
@@ -314,65 +373,6 @@ components:
           type: integer
         limit:
           type: integer
-    Chute:
-      type: object
-      properties:
-        chute_id:
-          type: string
-        name:
-          type: string
-        slug:
-          type: string
-        tagline:
-          type: string
-        readme:
-          type: string
-        image:
-          type: string
-        public:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-    HfInfo:
-      type: object
-      properties:
-        repo_id:
-          type: string
-        revision:
-          type: string
-    DeployChuteRequest:
-      type: object
-      required:
-      - name
-      - image
-      properties:
-        name:
-          type: string
-        image:
-          type: string
-          description: Image ID or name:tag the chute runs from.
-        code:
-          type: string
-          description: Chute source code from the CDK.
-        node_selector:
-          type: object
-          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
-          additionalProperties: true
-        public:
-          type: boolean
-    UpdateChuteRequest:
-      type: object
-      properties:
-        readme:
-          type: string
-        tagline:
-          type: string
-        logo:
-          type: string
-        scaling:
-          type: object
-          additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http
