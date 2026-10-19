@@ -1,0 +1,269 @@
+openapi: 3.2.0
+info:
+  title: Fast Invocations API
+  version: 0.1.0
+tags:
+- name: Invocations
+paths:
+  /invocations/usage:
+    get:
+      tags:
+      - Invocations
+      summary: Get Usage
+      description: 'Get aggregated usage data, which is the amount of revenue
+
+        we would be receiving if no usage was free.'
+      operationId: get_usage_invocations_usage_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /invocations/stats/llm:
+    get:
+      tags:
+      - Invocations
+      summary: Get Llm Stats
+      operationId: get_llm_stats_invocations_stats_llm_get
+      parameters:
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+          title: End Date
+      - name: chute_id
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Chute Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invocations/stats/diffusion:
+    get:
+      tags:
+      - Invocations
+      summary: Get Diffusion Stats
+      operationId: get_diffusion_stats_invocations_stats_diffusion_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /invocations/exports/{year}/{month}/{day}/{hour_format}:
+    get:
+      tags:
+      - Invocations
+      summary: Get Export
+      description: Get invocation exports for a particular hour.
+      operationId: get_export_invocations_exports__year___month___day___hour_format__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: year
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Year
+      - name: month
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Month
+      - name: day
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Day
+      - name: hour_format
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Hour Format
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invocations/exports/recent:
+    get:
+      tags:
+      - Invocations
+      summary: Get Recent Export
+      description: Get an export for recent data, which may not yet be in S3.
+      operationId: get_recent_export_invocations_exports_recent_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: hotkey
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hotkey
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 100
+          title: Limit
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

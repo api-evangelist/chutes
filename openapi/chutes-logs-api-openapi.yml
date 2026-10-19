@@ -1,0 +1,243 @@
+openapi: 3.2.0
+info:
+  title: Fast Logs API
+  version: 0.1.0
+tags:
+- name: Logs
+paths:
+  /logs/debug/{chute_id}:
+    get:
+      tags:
+      - Logs
+      summary: Get Debug Override
+      description: Report whether the per-chute log-capture debug override is enabled.
+      operationId: get_debug_override_logs_debug__chute_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Logs
+      summary: Set Debug Override
+      description: 'Enable log capture past instance activation for one chute (debugging).
+
+
+        NOTE: this captures post-activation chute stdout for the window it is enabled.'
+      operationId: set_debug_override_logs_debug__chute_id__put
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: ttl_seconds
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+            maximum: 604800
+            minimum: 60
+          - type: 'null'
+          title: Ttl Seconds
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Logs
+      summary: Clear Debug Override
+      description: Disable the per-chute log-capture debug override.
+      operationId: clear_debug_override_logs_debug__chute_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

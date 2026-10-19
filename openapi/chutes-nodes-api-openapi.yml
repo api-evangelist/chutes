@@ -1,0 +1,385 @@
+openapi: 3.2.0
+info:
+  title: Fast Nodes API
+  version: 0.1.0
+tags:
+- name: Nodes
+paths:
+  /nodes/:
+    get:
+      tags:
+      - Nodes
+      summary: List Nodes
+      description: List full inventory, optionally in detailed view (which lists chutes).
+      operationId: list_nodes_nodes__get
+      parameters:
+      - name: model
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+      - name: detailed
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Detailed
+      - name: hotkey
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hotkey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Nodes
+      summary: Create Nodes
+      description: Add nodes/GPUs to inventory.
+      operationId: create_nodes_nodes__post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiNodeArgs'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /nodes/supported:
+    get:
+      tags:
+      - Nodes
+      summary: List Supported Gpus
+      description: Show all currently supported GPUs.
+      operationId: list_supported_gpus_nodes_supported_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /nodes/verification_status:
+    get:
+      tags:
+      - Nodes
+      summary: Check Verification Status
+      description: Check taskiq task status, to see if the validator has finished GPU verification.
+      operationId: check_verification_status_nodes_verification_status_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: task_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Task Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /nodes/{node_id}:
+    delete:
+      tags:
+      - Nodes
+      summary: Delete Node
+      description: Remove a node from inventory.
+      operationId: delete_node_nodes__node_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: node_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Node Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    MultiNodeArgs:
+      properties:
+        server_id:
+          type: string
+          title: Server Id
+        server_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Server Name
+        nodes:
+          items:
+            $ref: '#/components/schemas/NodeArgs'
+          type: array
+          title: Nodes
+      type: object
+      required:
+      - server_id
+      - nodes
+      title: MultiNodeArgs
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    NodeArgs:
+      properties:
+        uuid:
+          type: string
+          title: Uuid
+        name:
+          type: string
+          title: Name
+        memory:
+          type: integer
+          title: Memory
+        major:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Major
+        minor:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Minor
+        processors:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Processors
+        sxm:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sxm
+        clock_rate:
+          type: number
+          title: Clock Rate
+        max_threads_per_processor:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Threads Per Processor
+        concurrent_kernels:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Concurrent Kernels
+        ecc:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Ecc
+        device_index:
+          type: integer
+          exclusiveMaximum: 10.0
+          minimum: 0.0
+          title: Device Index
+        gpu_identifier:
+          type: string
+          title: Gpu Identifier
+        verification_host:
+          type: string
+          title: Verification Host
+        verification_port:
+          type: integer
+          title: Verification Port
+      type: object
+      required:
+      - uuid
+      - name
+      - memory
+      - clock_rate
+      - device_index
+      - gpu_identifier
+      - verification_host
+      - verification_port
+      title: NodeArgs
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

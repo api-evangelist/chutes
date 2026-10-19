@@ -1,0 +1,859 @@
+openapi: 3.2.0
+info:
+  title: Fast Miner API
+  version: 0.1.0
+tags:
+- name: Miner
+paths:
+  /miner/chutes/:
+    get:
+      tags:
+      - Miner
+      summary: List Chutes
+      operationId: list_chutes_miner_chutes__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/images/:
+    get:
+      tags:
+      - Miner
+      summary: List Images
+      operationId: list_images_miner_images__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/nodes/:
+    get:
+      tags:
+      - Miner
+      summary: List Nodes
+      operationId: list_nodes_miner_nodes__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/servers/:
+    get:
+      tags:
+      - Miner
+      summary: List Servers
+      description: 'List all servers for the authenticated miner, with nested GPU info.
+
+        Provides full visibility into server inventory (including servers with no GPUs,
+
+        duplicate IPs, or name collisions).'
+      operationId: list_servers_miner_servers__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/instances/:
+    get:
+      tags:
+      - Miner
+      summary: List Instances
+      operationId: list_instances_miner_instances__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: explicit_null
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Explicit Null
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/jobs/:
+    get:
+      tags:
+      - Miner
+      summary: List Available Jobs
+      operationId: list_available_jobs_miner_jobs__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/jobs/{job_id}:
+    delete:
+      tags:
+      - Miner
+      summary: Release Job
+      operationId: release_job_miner_jobs__job_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Job Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/inventory:
+    get:
+      tags:
+      - Miner
+      summary: Get Full Inventory
+      operationId: get_full_inventory_miner_inventory_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/metrics/:
+    get:
+      tags:
+      - Miner
+      summary: Metrics
+      operationId: metrics_miner_metrics__get
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/active_instances/:
+    get:
+      tags:
+      - Miner
+      summary: List Active Instances
+      description: 'Get all active instances across the platform.
+
+        Used by miners to make informed preemption decisions based on global state.'
+      operationId: list_active_instances_miner_active_instances__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/chutes/{chute_id}/{version}:
+    get:
+      tags:
+      - Miner
+      summary: Get Chute
+      operationId: get_chute_miner_chutes__chute_id___version__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Version
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/stats:
+    get:
+      tags:
+      - Miner
+      summary: Get Stats
+      description: 'Get miner stats over different intervals based on instance data (matching actual scoring).
+
+
+        Returns instance-based metrics (total_instances, compute_seconds, compute_units, bounty_count)
+
+        which align with how miners are actually scored for validator weights.'
+      operationId: get_stats_miner_stats_get
+      parameters:
+      - name: miner_hotkey
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Miner Hotkey
+      - name: per_chute
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Per Chute
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/scores:
+    get:
+      tags:
+      - Miner
+      summary: Get Scores
+      operationId: get_scores_miner_scores_get
+      parameters:
+      - name: hotkey
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hotkey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/unique_chute_history/{hotkey}:
+    get:
+      tags:
+      - Miner
+      summary: Unique Chute History
+      operationId: unique_chute_history_miner_unique_chute_history__hotkey__get
+      parameters:
+      - name: hotkey
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Hotkey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/thrash_cooldowns:
+    get:
+      tags:
+      - Miner
+      summary: Get Thrash Cooldowns
+      description: XXX Removed, no such thing, but return empty array for compat.
+      operationId: get_thrash_cooldowns_miner_thrash_cooldowns_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /miner/metagraph:
+    get:
+      tags:
+      - Miner
+      summary: Get Metagraph
+      operationId: get_metagraph_miner_metagraph_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /miner/instance_logs:
+    get:
+      tags:
+      - Miner
+      summary: Stream Miner Logs
+      description: 'Stream startup logs for an instance identified by a launch config JWT.
+
+
+        Only available for public chutes, and only before the instance is activated.
+
+        Connections are capped at 5 minutes. To resume, pass the ``cursor`` query
+
+        parameter (an ISO timestamp included as ``cursor`` in each JSON payload).'
+      operationId: stream_miner_logs_miner_instance_logs_get
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

@@ -1,0 +1,399 @@
+openapi: 3.2.0
+info:
+  title: Fast Authentication API
+  version: 0.1.0
+tags:
+- name: Authentication
+paths:
+  /registry/auth:
+    get:
+      tags:
+      - Authentication
+      summary: Registry Auth
+      description: 'Authenticate registry/docker pull requests.
+
+
+        In the Depot proxy flow this endpoint is called by nginx auth_request to
+
+        verify the miner before nginx proxies to Depot''s token endpoint; it only
+
+        needs to return 200 on success (or 401 on failure).
+
+
+        The VM''s attested measurement version decides which auth is required:
+
+
+        - version >= registry_mtls_min_version: mTLS. The nginx frontend forwards the
+
+        client cert as X-Client-Cert; the leaf is verified against the CA registered
+
+        for the VM. No legacy fallback — a VM this new must use mTLS.
+
+        - otherwise (older VM, or unknown IP): legacy Bittensor hotkey/signature/nonce.
+
+
+        Setting registry_mtls_min_version to "0.0.0" forces every attested VM onto
+
+        mTLS — the kill switch that closes the legacy "any registered miner can pull
+
+        any private chute" hole once the fleet is fully migrated.
+
+
+        The require_registry_proxy_secret dependency, when REGISTRY_PROXY_SECRET is configured,
+
+        rejects requests that do not carry X-Registry-Proxy-Auth matching the secret,
+
+        preventing X-Client-Cert / X-Real-IP spoofing on connections that bypass the
+
+        registry proxy. The mTLS client cert is extracted (typed) by extract_optional_client_cert.'
+      operationId: registry_auth_registry_auth_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /api_keys/:
+    get:
+      tags:
+      - Authentication
+      summary: List Keys
+      description: List (and optionally filter/paginate) keys.
+      operationId: list_keys_api_keys__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 0
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 25
+          title: Limit
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Authentication
+      summary: Create Api Key
+      description: Create a new API key. OAuth access tokens and existing API keys cannot mint credentials.
+      operationId: create_api_key_api_keys__post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIKeyArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api_keys/{api_key_id}:
+    get:
+      tags:
+      - Authentication
+      summary: Get Key
+      description: Get a single key.
+      operationId: get_key_api_keys__api_key_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: api_key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Api Key Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Authentication
+      summary: Delete Api Key
+      description: Delete an API key by ID.
+      operationId: delete_api_key_api_keys__api_key_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: api_key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Api Key Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Action:
+      type: string
+      enum:
+      - read
+      - write
+      - delete
+      - invoke
+      title: Action
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    APIKeyArgs:
+      properties:
+        admin:
+          type: boolean
+          title: Admin
+        name:
+          type: string
+          title: Name
+        scopes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ScopeArgs'
+            type: array
+          - type: 'null'
+          title: Scopes
+          default: []
+      type: object
+      required:
+      - admin
+      - name
+      title: APIKeyArgs
+    ScopeArgs:
+      properties:
+        object_type:
+          type: string
+          title: Object Type
+        object_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Object Id
+        action:
+          anyOf:
+          - $ref: '#/components/schemas/Action'
+          - type: 'null'
+      type: object
+      required:
+      - object_type
+      title: ScopeArgs
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

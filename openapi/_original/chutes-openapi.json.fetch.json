@@ -1,0 +1,12 @@
+{
+ "url": "https://api.chutes.ai/openapi.json",
+ "final": "https://api.chutes.ai/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 334718,
+ "sha256": "23e8895b217d4b7c787124d07f6dee22e1603de01d7fed49e0d1d386c77347e4",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

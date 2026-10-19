@@ -1,0 +1,1572 @@
+openapi: 3.2.0
+info:
+  title: Fast External Backends API
+  version: 0.1.0
+tags:
+- name: External Backends
+paths:
+  /external/accounts:
+    get:
+      tags:
+      - External Backends
+      summary: List Accounts
+      operationId: list_accounts_external_accounts_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - External Backends
+      summary: Create Account
+      operationId: create_account_external_accounts_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalBackendAccountCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/accounts/{account_id}:
+    get:
+      tags:
+      - External Backends
+      summary: Get Account
+      operationId: get_account_external_accounts__account_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Account Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - External Backends
+      summary: Update Account
+      operationId: update_account_external_accounts__account_id__patch
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Account Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalBackendAccountUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - External Backends
+      summary: Delete Account
+      operationId: delete_account_external_accounts__account_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Account Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/accounts/{account_id}/operations/cancel:
+    post:
+      tags:
+      - External Backends
+      summary: Cancel Account Operations
+      description: Request cancellation of every operation active at the account lock point.
+      operationId: cancel_account_operations_external_accounts__account_id__operations_cancel_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Account Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalAccountBulkCancelRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/accounts/{account_id}/credentials/force-rotate:
+    post:
+      tags:
+      - External Backends
+      summary: Force Rotate Account Credentials
+      description: Disable admissions and rotate existing credential names during an incident.
+      operationId: force_rotate_account_credentials_external_accounts__account_id__credentials_force_rotate_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Account Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalCredentialForceRotateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/bindings:
+    get:
+      tags:
+      - External Backends
+      summary: List Bindings
+      operationId: list_bindings_external_bindings_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - External Backends
+      summary: Create Binding
+      operationId: create_binding_external_bindings_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalChuteBindingCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/bindings/{binding_id}:
+    get:
+      tags:
+      - External Backends
+      summary: Get Binding
+      operationId: get_binding_external_bindings__binding_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: binding_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Binding Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - External Backends
+      summary: Update Binding
+      operationId: update_binding_external_bindings__binding_id__patch
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: binding_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Binding Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalChuteBindingUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - External Backends
+      summary: Delete Binding
+      operationId: delete_binding_external_bindings__binding_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: binding_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Binding Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/chutes:
+    get:
+      tags:
+      - External Backends
+      summary: List External Chutes
+      operationId: list_external_chutes_external_chutes_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - External Backends
+      summary: Create External Chute
+      operationId: create_external_chute_external_chutes_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalChuteCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /external/chutes/{chute_id}:
+    get:
+      tags:
+      - External Backends
+      summary: Get External Chute
+      operationId: get_external_chute_external_chutes__chute_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - External Backends
+      summary: Update External Chute
+      operationId: update_external_chute_external_chutes__chute_id__patch
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalChuteUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - External Backends
+      summary: Delete External Chute
+      operationId: delete_external_chute_external_chutes__chute_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ExternalBackendAccountUpdate:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+          - type: 'null'
+          title: Name
+        base_url:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          title: Base Url
+        credentials:
+          anyOf:
+          - additionalProperties:
+              type: string
+              format: password
+              writeOnly: true
+            type: object
+            maxProperties: 32
+            minProperties: 1
+          - type: 'null'
+          title: Credentials
+        remove_credentials:
+          items:
+            type: string
+          type: array
+          maxItems: 32
+          title: Remove Credentials
+        auth_header_templates:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ExternalAuthHeaderTemplate'
+            type: array
+            maxItems: 32
+            minItems: 1
+          - type: 'null'
+          title: Auth Header Templates
+        connection_config:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Connection Config
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+      additionalProperties: false
+      type: object
+      title: ExternalBackendAccountUpdate
+    ExternalChuteCreate:
+      properties:
+        account_id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Account Id
+        name:
+          type: string
+          maxLength: 127
+          minLength: 3
+          title: Name
+        tagline:
+          type: string
+          maxLength: 1024
+          title: Tagline
+          default: ''
+        readme:
+          type: string
+          maxLength: 16384
+          title: Readme
+          default: ''
+        tool_description:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Tool Description
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
+        public:
+          type: boolean
+          title: Public
+          default: false
+        standard_template:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Standard Template
+        cords:
+          items:
+            $ref: '#/components/schemas/ExternalCord'
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: Cords
+        routes:
+          items:
+            $ref: '#/components/schemas/ExternalRouteConfig'
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: Routes
+        pricing_rules:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          maxItems: 1000
+          minItems: 1
+          title: Pricing Rules
+      additionalProperties: false
+      type: object
+      required:
+      - account_id
+      - name
+      - cords
+      - routes
+      - pricing_rules
+      title: ExternalChuteCreate
+    ExternalAuthHeaderTemplate:
+      properties:
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Name
+        template:
+          type: string
+          maxLength: 1024
+          minLength: 1
+          title: Template
+        references:
+          additionalProperties:
+            type: string
+          type: object
+          maxProperties: 32
+          minProperties: 1
+          title: References
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - template
+      - references
+      title: ExternalAuthHeaderTemplate
+    ExternalChuteUpdate:
+      properties:
+        tagline:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Tagline
+        readme:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Readme
+        tool_description:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Tool Description
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
+        public:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Public
+        standard_template:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Standard Template
+        account_id:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+          - type: 'null'
+          title: Account Id
+        cords:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ExternalCord'
+            type: array
+            maxItems: 100
+            minItems: 1
+          - type: 'null'
+          title: Cords
+        routes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ExternalRouteConfig'
+            type: array
+            maxItems: 100
+            minItems: 1
+          - type: 'null'
+          title: Routes
+        pricing_rules:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+            maxItems: 1000
+            minItems: 1
+          - type: 'null'
+          title: Pricing Rules
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+      additionalProperties: false
+      type: object
+      title: ExternalChuteUpdate
+    ExternalChuteBindingCreate:
+      properties:
+        chute_id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Chute Id
+        account_id:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Account Id
+        routes:
+          items:
+            $ref: '#/components/schemas/ExternalRouteConfig'
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: Routes
+        enabled:
+          type: boolean
+          title: Enabled
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - chute_id
+      - account_id
+      - routes
+      title: ExternalChuteBindingCreate
+    ExternalChuteBindingUpdate:
+      properties:
+        account_id:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+          - type: 'null'
+          title: Account Id
+        routes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ExternalRouteConfig'
+            type: array
+            maxItems: 100
+            minItems: 1
+          - type: 'null'
+          title: Routes
+        enabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enabled
+      additionalProperties: false
+      type: object
+      title: ExternalChuteBindingUpdate
+    ExternalOperationMode:
+      type: string
+      enum:
+      - sync
+      - stream
+      - task
+      - realtime
+      title: ExternalOperationMode
+    ExternalCredentialForceRotateRequest:
+      properties:
+        reason:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Reason
+        credentials:
+          additionalProperties:
+            type: string
+            format: password
+            writeOnly: true
+          type: object
+          maxProperties: 32
+          minProperties: 1
+          title: Credentials
+      additionalProperties: false
+      type: object
+      required:
+      - reason
+      - credentials
+      title: ExternalCredentialForceRotateRequest
+    ExternalRouteConfig:
+      properties:
+        cord_path:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Cord Path
+        upstream_resource_id:
+          type: string
+          maxLength: 512
+          minLength: 1
+          title: Upstream Resource Id
+        operation_mode:
+          $ref: '#/components/schemas/ExternalOperationMode'
+        protocol:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Protocol
+        base_url:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          title: Base Url
+        path_template:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Path Template
+        method:
+          type: string
+          maxLength: 7
+          minLength: 3
+          title: Method
+          default: POST
+        request_config:
+          additionalProperties: true
+          type: object
+          title: Request Config
+        response_config:
+          additionalProperties: true
+          type: object
+          title: Response Config
+        operation_config:
+          additionalProperties: true
+          type: object
+          title: Operation Config
+        capabilities:
+          additionalProperties: true
+          type: object
+          title: Capabilities
+      additionalProperties: false
+      type: object
+      required:
+      - cord_path
+      - upstream_resource_id
+      - operation_mode
+      - protocol
+      - path_template
+      title: ExternalRouteConfig
+    ExternalCord:
+      properties:
+        method:
+          type: string
+          maxLength: 7
+          minLength: 3
+          title: Method
+        path:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Path
+        function:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Function
+        stream:
+          type: boolean
+          title: Stream
+        passthrough:
+          type: boolean
+          title: Passthrough
+          default: false
+        public_api_path:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Public Api Path
+        public_api_method:
+          type: string
+          maxLength: 7
+          minLength: 3
+          title: Public Api Method
+        input_schema:
+          additionalProperties: true
+          type: object
+          title: Input Schema
+        output_schema:
+          additionalProperties: true
+          type: object
+          title: Output Schema
+        output_content_type:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Output Content Type
+        minimal_input_schema:
+          additionalProperties: true
+          type: object
+          title: Minimal Input Schema
+      additionalProperties: false
+      type: object
+      required:
+      - method
+      - path
+      - function
+      - stream
+      - public_api_path
+      - public_api_method
+      title: ExternalCord
+      description: Public Cord metadata without importing the hosted execution domain.
+    ExternalBackendAccountCreate:
+      properties:
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Name
+        adapter:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Adapter
+        base_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Base Url
+        credentials:
+          additionalProperties:
+            type: string
+            format: password
+            writeOnly: true
+          type: object
+          maxProperties: 32
+          minProperties: 1
+          title: Credentials
+        auth_header_templates:
+          items:
+            $ref: '#/components/schemas/ExternalAuthHeaderTemplate'
+          type: array
+          maxItems: 32
+          minItems: 1
+          title: Auth Header Templates
+        connection_config:
+          additionalProperties: true
+          type: object
+          title: Connection Config
+        enabled:
+          type: boolean
+          title: Enabled
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - adapter
+      - base_url
+      - credentials
+      - auth_header_templates
+      title: ExternalBackendAccountCreate
+    ExternalAccountBulkCancelRequest:
+      properties:
+        reason:
+          type: string
+          maxLength: 2048
+          minLength: 1
+          title: Reason
+      additionalProperties: false
+      type: object
+      required:
+      - reason
+      title: ExternalAccountBulkCancelRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

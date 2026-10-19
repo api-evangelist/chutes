@@ -1,0 +1,2013 @@
+openapi: 3.2.0
+info:
+  title: Fast Servers API
+  version: 0.1.0
+tags:
+- name: Servers
+paths:
+  /servers/nonce:
+    get:
+      tags:
+      - Servers
+      summary: Get Nonce
+      description: 'Generate a nonce for boot attestation.
+
+
+        This endpoint is called by VMs during boot before any registration.
+
+        No authentication required as the VM doesn''t exist in the system yet.
+
+
+        miner_hotkey is OPTIONAL for backwards compatibility: older VM initramfs fetch the nonce
+
+        without it. When supplied it is bound into the nonce, and boot attestation enforces that
+
+        args.miner_hotkey matches the value stored here (preventing cross-miner nonce reuse). VMs
+
+        that omit it get an unbound nonce and the binding check is skipped.
+
+
+        TODO: make miner_hotkey required when all VMs >= 1.4.0'
+      operationId: get_nonce_servers_nonce_get
+      parameters:
+      - name: miner_hotkey
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Miner Hotkey
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/boot/attestation:
+    post:
+      tags:
+      - Servers
+      summary: Verify Boot Attestation
+      description: 'Verify boot attestation and return LUKS passphrase.
+
+
+        Both VM generations reach this route, so the hotkey proof is EXTRACTED rather than required:
+
+        a presented signature is verified here and 401s if it does not hold, but its absence is left
+
+        for the handler to judge once the quote names the attested image. See
+
+        process_boot_attestation, which requires a proof from any image whose measured initramfs
+
+        ships the signer.
+
+
+        Verifies the TDX quote against the expected boot measurements and returns the LUKS passphrase
+
+        for disk decryption if valid. For VMs >= 1.3.0 it also returns a luks_quote_nonce for the
+
+        following runtime call (POST /provision on 1.4.0+, POST /luks/attest on 1.3.x); for 1.4.0+ it
+
+        additionally returns root_next + root_confirm_nonce and the VM''s ephemeral auth SS58.'
+      operationId: verify_boot_attestation_servers_boot_attestation_post
+      parameters:
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BootAttestationArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{vm_name}/luks/attest:
+    post:
+      tags:
+      - Servers
+      summary: Attest Luks
+      description: 'Rotate LUKS passphrases for new-format VMs (version >= 1.3.0).
+
+
+        DEPRECATED: superseded by POST /provision, which does the same storage rotation and
+
+        additionally records the VM root CA identity. Kept unchanged for legacy in-field VMs;
+
+        retire once the fleet upgrades.
+
+
+        The VM embeds the luks_quote_nonce (received in the boot attestation response)
+
+        in a TDX quote after extending RTMR3 in initramfs. require_luks_quote_nonce
+
+        validates and consumes the nonce; the handler then calls verify_quote which
+
+        checks the TDX signature and all RTMR measurements including RTMR3. Returns
+
+        rotated passphrases, the k3s encryption key, and a confirm nonce.'
+      operationId: attest_luks_servers__vm_name__luks_attest_post
+      parameters:
+      - name: vm_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vm Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Quote-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Quote-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LuksAttestRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{vm_name}/luks/confirm:
+    post:
+      tags:
+      - Servers
+      summary: Confirm Luks Rotation
+      description: 'Confirm or discard pending LUKS passphrase rotation results.
+
+
+        DEPRECATED for the storage-rotation flow: new VMs use POST /provision/confirm (same
+
+        shared logic). Kept for legacy in-field VMs; note the boot-phase root-passphrase confirm
+
+        still uses this route until /luks/* is fully retired.
+
+
+        The VM reports per-volume success/failure. require_confirm_nonce validates
+
+        and consumes the nonce before the handler runs. Volumes with rotated=True
+
+        have pending passphrases promoted to current; rotated=False discards pending.'
+      operationId: confirm_luks_rotation_servers__vm_name__luks_confirm_post
+      parameters:
+      - name: vm_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vm Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Confirm-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Confirm-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LuksConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{vm_name}/provision:
+    post:
+      tags:
+      - Servers
+      summary: Provision
+      description: 'Provision a new VM at runtime: record its root CA identity and issue storage secrets.
+
+
+        Only 1.4.0+ VMs reach this route (it is behind require_cvm_proxy), and every one of them
+
+        signs, so require_hotkey_auth demands a proven hotkey at the door -- no backwards-compatible
+
+        "unsigned is acceptable" case exists here, unlike boot attestation. The proven identity is
+
+        what the rc gate in verify_quote is given.
+
+
+        The RTMR3-attested runtime entry point for new VMs (supersedes /luks/attest going
+
+        forward). The VM presents its per-boot root CA as the mTLS client cert; the quote''s
+
+        REPORTDATA binds SHA256(that cert''s pubkey), so the same cert_hash check that guards
+
+        /luks/attest also proves CA possession — no bespoke quote logic is needed.
+
+        require_luks_quote_nonce validates and consumes the runtime nonce; the handler verifies
+
+        the quote (signature + all RTMR measurements incl. RTMR3), records
+
+        server.vm_root_ca_cert (idempotent), and returns rotated passphrases, the k3s encryption
+
+        key, and a confirm nonce.'
+      operationId: provision_servers__vm_name__provision_post
+      parameters:
+      - name: vm_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vm Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Quote-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Quote-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{vm_name}/provision/confirm:
+    post:
+      tags:
+      - Servers
+      summary: Provision Confirm
+      description: 'Confirm or discard pending storage-passphrase rotations from POST /provision.
+
+
+        Delegates to the same shared logic as the legacy /luks/confirm (process_luks_confirm):
+
+        require_confirm_nonce validates and consumes the nonce, then volumes with rotated=True
+
+        have pending passphrases promoted to current and rotated=False discards pending.'
+      operationId: provision_confirm_servers__vm_name__provision_confirm_post
+      parameters:
+      - name: vm_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vm Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Confirm-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Confirm-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LuksConfirmRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/:
+    post:
+      tags:
+      - Servers
+      summary: Create Server
+      description: 'Register a new server.
+
+
+        This is called via CLI after the server has booted and decrypted its disk.
+
+        Links the server to any existing boot attestation history via server ip.'
+      operationId: create_server_servers__post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerArgs'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/tee/measurements:
+    get:
+      tags:
+      - Servers
+      summary: Get Tee Measurements
+      description: 'Deprecated: use GET /servers/tdx/measurements (and /servers/snp/measurements for AMD).
+
+
+        The accepted Intel TDX measurements in their original shape, with boot and runtime RTMR sets.
+
+        Frozen as TDX-only; it switches to a combined format around the date in its Sunset header.
+
+        No authentication required — public transparency endpoint.'
+      operationId: get_tee_measurements_servers_tee_measurements_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+      deprecated: true
+  /servers/tdx/measurements:
+    get:
+      tags:
+      - Servers
+      summary: Get Tdx Measurements
+      description: 'The accepted Intel TDX measurements: the MRTD and RTMR0-3 a runtime quote must carry, per
+
+        published VM image and host class. A boot quote carries the same values with RTMR3 all-zeros.
+
+
+        Join each of `fingerprints` to GET /servers/tdx/host_profiles to reproduce RTMR0 for a
+
+        host class.
+
+        Release candidates are never listed. No authentication required — public transparency endpoint.'
+      operationId: get_tdx_measurements_servers_tdx_measurements_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /servers/snp/measurements:
+    get:
+      tags:
+      - Servers
+      summary: Get Snp Measurements
+      description: 'The accepted AMD SEV-SNP measurements: the launch digest a report''s MEASUREMENT must equal,
+
+        per published VM image and host class. The report must also meet its product line''s
+
+        requirements (GET /servers/snp/product_lines).
+
+
+        Release candidates are never listed. No authentication required — public transparency endpoint.'
+      operationId: get_snp_measurements_servers_snp_measurements_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /servers/snp/product_lines:
+    get:
+      tags:
+      - Servers
+      summary: Get Snp Product Lines
+      description: 'What an AMD SEV-SNP report must satisfy beyond its measurement, per AMD product line: the ARK
+
+        fingerprint its VCEK chain must end in, the CPU variants accepted (by the report''s CPUID family,
+
+        model and stepping) with each one''s minimum reported TCB, and the PLATFORM_INFO and
+
+        mitigation-vector bits that must be set.
+
+
+        Everything a third party needs to repeat our acceptance checks. A product line or variant not
+
+        listed is not accepted. No authentication required — public transparency endpoint.'
+      operationId: get_snp_product_lines_servers_snp_product_lines_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /servers/tdx/host_profiles:
+    get:
+      tags:
+      - Servers
+      summary: List Host Profiles
+      description: 'Return host profiles: the platform inputs a measurement is built from.
+
+
+        By default, only host classes that HAVE measurements. Each entry''s `tee_type` says which
+
+        platform it attests under. Find `fingerprint` in the `fingerprints` of that platform''s
+
+        measurements (GET /servers/tdx/measurements or /servers/snp/measurements), regenerate the
+
+        measurement from the
+
+        inputs here, and compare -- that makes every published measurement independently
+
+        reproducible, and a quote holder can see which host class their own measurement corresponds
+
+        to. A third party needs no flags and can never be handed an unverified claim.
+
+
+        `include_pending=true` also returns host classes awaiting generation. That is the measurement
+
+        generator''s queue: a profile becomes measured only once measurements are generated for it, and
+
+        generation has to fetch it first. Each entry''s `measured` flag says which set it is in.
+
+
+        Public and unauthenticated, so the generation side needs no database credentials. Every entry
+
+        is host-class data: the machine-identifying fields are dropped at submission and never stored,
+
+        and the submitter''s `miner_hotkey` is a column this query never selects.'
+      operationId: list_host_profiles_servers_tdx_host_profiles_get
+      parameters:
+      - name: include_pending
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Also return host classes awaiting measurement generation.
+          default: false
+          title: Include Pending
+        description: Also return host classes awaiting measurement generation.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Servers
+      summary: Submit Host Profile
+      description: 'Register a host class (sek8s `discover-profile.sh` output) so Chutes can measure it.
+
+
+        One of four distinct operations: this REGISTERS, POST /servers/tdx/host_profiles/status
+
+        RESOLVES a class (is it known, and for which images), POST /servers/tdx/preflight CHECKS whether
+
+        one specific image can boot, and GET /servers/tdx/host_profiles LISTS the generated set. A miner
+
+        reaches this only when the status lookup reports the class is not on file. The API owns the
+
+        fingerprint -- the miner sends raw platform metadata and gets back the class''s retention
+
+        lifecycle, which only ever advances:
+
+
+        * `accepted` -- a measurement has already been generated for this class; retained from here on
+
+        * `pending` -- parked in object storage, awaiting its first measurement generation
+
+
+        A real submission is always stored, so this never returns `unknown`. It answers only whether the
+
+        class has been measured at all; whether the caller''s specific image can boot is preflight''s job.
+
+        Signed by the miner hotkey, so the signature covers the request body.'
+      operationId: submit_host_profile_servers_tdx_host_profiles_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostProfile'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/tdx/host_profiles/status:
+    post:
+      tags:
+      - Servers
+      summary: Tdx Host Profile Status
+      description: 'Is this Intel TDX host class known, and which VM images cover it? The check
+
+        `chutes-cvm host verify` runs, and the launch''s Step 1. An AMD class is answered by
+
+        POST /servers/snp/host_profiles/status.
+
+
+        Deliberately version-free: a miner verifies a host BEFORE downloading any image, so this asks
+
+        only about the topology -- "can this host run anything at all, and if so what".
+
+
+        * `measurements` non-empty -> the class is attestable; those are the images it can launch.
+
+        * empty, `status: pending` -> registered, awaiting measurement generation. Nothing to do but
+
+        retry later; re-submitting will not speed it up.
+
+        * empty, `status: unknown` -> never submitted. Register it with
+
+        POST /servers/tdx/host_profiles.
+
+
+        A POST because the API owns the fingerprint: a caller cannot ask about "my topology" without
+
+        handing over the profile to be fingerprinted. Stores nothing -- the read-only counterpart to the
+
+        submission route. Signed by the miner hotkey, so the signature covers the request body.'
+      operationId: tdx_host_profile_status_servers_tdx_host_profiles_status_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostProfile'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/snp/host_profiles/status:
+    post:
+      tags:
+      - Servers
+      summary: Snp Host Profile Status
+      description: 'Is this AMD SEV-SNP host class known, and which VM images cover it? The same question as
+
+        POST /servers/tdx/host_profiles/status, for SEV-SNP classes.
+
+
+        Each covered image also carries `acpi_sha256`: the hash of the class''s ACPI tables, which
+
+        the guest firmware checks against `sek8s.acpi_sha256` on the kernel cmdline. The launch puts it
+
+        there; without it the image cannot boot.'
+      operationId: snp_host_profile_status_servers_snp_host_profiles_status_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostProfile'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/tdx/preflight:
+    post:
+      tags:
+      - Servers
+      summary: Tdx Preflight
+      description: 'Can this exact image boot on this host? The one call a launch/upgrade preflight makes.
+
+
+        A check against both a host profile and the measurement set, so it hangs off neither. The API
+
+        fingerprints the submitted profile and answers whether a published measurement for the caller''s
+
+        `(version, rc)` carries that fingerprint -- the whole launch decision in one boolean:
+
+
+        * `launchable: true` -> the VM will attest; launch.
+
+        * `launchable: false` -> register the class (POST /servers/tdx/host_profiles), then retry once
+
+        Chutes publishes its measurement.
+
+
+        Stores nothing and reveals nothing beyond the answer -- not the full measurement set, not
+
+        whether a profile row exists. Signed by the miner hotkey, so the signature covers the body.'
+      operationId: tdx_preflight_servers_tdx_preflight_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: version
+        in: query
+        required: true
+        schema:
+          type: string
+          description: VM image version the caller intends to boot.
+          title: Version
+        description: VM image version the caller intends to boot.
+      - name: rc
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Whether that image is a release-candidate (debug) build.
+          default: false
+          title: Rc
+        description: Whether that image is a release-candidate (debug) build.
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostProfile'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/signing-keys:
+    get:
+      tags:
+      - Servers
+      summary: Get Signing Keys
+      description: 'Return the signed key bundle used by booting VMs to fetch and verify cosign/Helm keys.
+
+
+        Each entry in ''keys'' is a base64-encoded public key; the corresponding entry in
+
+        ''signatures'' is a base64-encoded RSA signature (PKCS#1 v1.5 over SHA-256) produced
+
+        offline by the root signing key in Cloud KMS. Nothing here can sign; this only serves.
+
+        Intentionally public — no mTLS required. Independent third parties and auditors can
+
+        fetch these public keys to verify TDX quotes without needing to be a VM client.'
+      operationId: get_signing_keys_servers_signing_keys_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /servers/maintenance/policy:
+    get:
+      tags:
+      - Servers
+      summary: Get Maintenance Policy
+      description: 'Return the upgrade window, concurrency limits, and the miner''s server version status.
+
+
+        When a window is currently open, ``window_open`` is true and ``active_window`` describes it.
+
+        When no window is open, we fall back to the most recently created window (``window_open``
+
+        false) so miners can still see which servers remain out of date against the last target.'
+      operationId: get_maintenance_policy_servers_maintenance_policy_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{server_id}:
+    patch:
+      tags:
+      - Servers
+      summary: Patch Server Name
+      description: 'Update name for an existing server. Path is server_id; query param is the new name.
+
+        The server row is updated when hotkey and server_id match.'
+      operationId: patch_server_name_servers__server_id__patch
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Id
+      - name: server_name
+        in: query
+        required: true
+        schema:
+          type: string
+          description: New VM name to set
+          title: Server Name
+        description: New VM name to set
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Servers
+      summary: Get Server Details
+      description: Get details for a specific server by miner hotkey and server id.
+      operationId: get_server_details_servers__server_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{server_name_or_id}/maintenance/preflight:
+    get:
+      tags:
+      - Servers
+      summary: Get Maintenance Preflight
+      description: Check maintenance eligibility for a server without entering maintenance.
+      operationId: get_maintenance_preflight_servers__server_name_or_id__maintenance_preflight_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_name_or_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Name Or Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{server_name_or_id}/maintenance:
+    put:
+      tags:
+      - Servers
+      summary: Put Confirm Maintenance
+      description: 'Request maintenance: purge instances and mark server for upgrade.
+
+
+        Returns 202 with state "pending" when sole-survivor instances must keep serving until a
+
+        replacement is hot elsewhere; the server is promoted to maintenance automatically.'
+      operationId: put_confirm_maintenance_servers__server_name_or_id__maintenance_put
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_name_or_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Name Or Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Servers
+      summary: Get Server Maintenance Status
+      description: 'Poll a server''s maintenance state; "maintenance" means it is safe to upgrade/reboot.
+
+
+        Pending servers are advanced by the maintenance reconciler, which refreshes this status
+
+        on every sweep.'
+      operationId: get_server_maintenance_status_servers__server_name_or_id__maintenance_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_name_or_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Name Or Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{server_name_or_id}:
+    delete:
+      tags:
+      - Servers
+      summary: Remove Server
+      description: Remove a server by miner hotkey and server id or VM name (path param server_name_or_id).
+      operationId: remove_server_servers__server_name_or_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_name_or_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Name Or Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /servers/{server_id}/nonce:
+    get:
+      tags:
+      - Servers
+      summary: Get Runtime Nonce
+      description: Generate a nonce for runtime attestation.
+      operationId: get_runtime_nonce_servers__server_id__nonce_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: server_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Server Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HostProfileIbDevice:
+      properties:
+        vendor:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Vendor
+        device_id:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Device Id
+        pci_class:
+          type: string
+          pattern: ^([0-9a-fA-F]{4})?$
+          title: Pci Class
+        numa_node:
+          type: integer
+          maximum: 64.0
+          minimum: -1.0
+          title: Numa Node
+        bars:
+          items:
+            $ref: '#/components/schemas/HostProfilePciBar'
+          type: array
+          maxItems: 6
+          title: Bars
+        is_bridge_pf:
+          type: boolean
+          title: Is Bridge Pf
+          default: false
+        is_vf:
+          type: boolean
+          title: Is Vf
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - vendor
+      - device_id
+      - pci_class
+      - numa_node
+      - bars
+      title: HostProfileIbDevice
+      description: 'One InfiniBand device, plus the two flags that decide whether it is passed through.
+
+
+        `is_bridge_pf` comes from VPD, which needs root -- an unprivileged capture reports every PF
+
+        as non-bridge.'
+    HostProfileCpu:
+      properties:
+        count:
+          type: integer
+          maximum: 8192.0
+          minimum: 1.0
+          title: Count
+        sockets:
+          type: integer
+          maximum: 64.0
+          minimum: 1.0
+          title: Sockets
+        vendor:
+          type: string
+          maxLength: 64
+          minLength: 1
+          pattern: ^[A-Za-z0-9 _.()-]*$
+          title: Vendor
+        processor_id:
+          anyOf:
+          - type: string
+            pattern: ^[0-9a-fA-F]{1,32}$
+          - type: 'null'
+          title: Processor Id
+      additionalProperties: false
+      type: object
+      required:
+      - count
+      - sockets
+      - vendor
+      - processor_id
+      title: HostProfileCpu
+      description: 'The host CPU facts that reach RTMR0: the guest -smp and the SMBIOS Type-4 identity.
+
+
+        Mirrors chutes-cvm''s `HostCpu` field for field. `processor_id` is nullable -- CPUID leaf-1 is
+
+        unreadable on some hosts -- but the key is required, and generation refuses a null rather than
+
+        measuring its own host''s CPU.'
+    HostProfile:
+      properties:
+        gpus:
+          items:
+            $ref: '#/components/schemas/HostProfileGpuDevice'
+          type: array
+          maxItems: 64
+          minItems: 1
+          title: Gpus
+        nvswitches:
+          items:
+            $ref: '#/components/schemas/HostProfileNvswitchDevice'
+          type: array
+          maxItems: 256
+          title: Nvswitches
+        ib_devices:
+          items:
+            $ref: '#/components/schemas/HostProfileIbDevice'
+          type: array
+          maxItems: 256
+          title: Ib Devices
+        cpu:
+          $ref: '#/components/schemas/HostProfileCpu'
+        memory:
+          $ref: '#/components/schemas/HostProfileMemory'
+        numa:
+          $ref: '#/components/schemas/HostProfileNuma'
+        qemu:
+          $ref: '#/components/schemas/HostProfileQemu'
+      additionalProperties: false
+      type: object
+      required:
+      - gpus
+      - cpu
+      - memory
+      - numa
+      - qemu
+      title: HostProfile
+      description: 'One host class, as chutes-cvm''s ``HostProfile.to_api_profile()`` submits it.
+
+
+        A direct translation of the client''s own model: the RTMR0 determinants and nothing else.
+
+        Stored == hashed == required, one set. An unhashed field stored beside a hashed one would
+
+        re-split the class at the byte level -- two hosts that measure identically would differ in the
+
+        stored row, and first-write-wins would silently drop one of them. That is why host RAM, BDFs,
+
+        DMI strings and the lspci tree are absent rather than merely excluded.
+
+
+        Every block forbids extras, so a client that adds a key 422s until the API models it: add the
+
+        field here, deploy, then roll out the client.'
+    ProvisionRequest:
+      properties:
+        quote:
+          type: string
+          title: Quote
+          description: Base64-encoded TDX quote (runtime type, RTMR3 extended)
+        volumes:
+          items:
+            type: string
+          type: array
+          title: Volumes
+          description: Volume names to rotate passphrases for
+      type: object
+      required:
+      - quote
+      - volumes
+      title: ProvisionRequest
+      description: 'Request model for POST /servers/{vm_name}/provision.
+
+
+        The runtime (RTMR3-attested) provisioning entry point for new VMs. The VM presents its
+
+        root CA as the mTLS client cert; the quote''s REPORTDATA binds SHA256(that cert''s pubkey),
+
+        so the CA identity is recorded from this call. Mirrors the luks/attest body today (quote
+
+        + volumes) and is the extensible home for future provisioning inputs.'
+    NodeArgs:
+      properties:
+        uuid:
+          type: string
+          title: Uuid
+        name:
+          type: string
+          title: Name
+        memory:
+          type: integer
+          title: Memory
+        major:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Major
+        minor:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Minor
+        processors:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Processors
+        sxm:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sxm
+        clock_rate:
+          type: number
+          title: Clock Rate
+        max_threads_per_processor:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Threads Per Processor
+        concurrent_kernels:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Concurrent Kernels
+        ecc:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Ecc
+        device_index:
+          type: integer
+          exclusiveMaximum: 10.0
+          minimum: 0.0
+          title: Device Index
+        gpu_identifier:
+          type: string
+          title: Gpu Identifier
+        verification_host:
+          type: string
+          title: Verification Host
+        verification_port:
+          type: integer
+          title: Verification Port
+      type: object
+      required:
+      - uuid
+      - name
+      - memory
+      - clock_rate
+      - device_index
+      - gpu_identifier
+      - verification_host
+      - verification_port
+      title: NodeArgs
+    HostProfileMemory:
+      properties:
+        guest_gb:
+          type: integer
+          maximum: 262144.0
+          minimum: 1.0
+          title: Guest Gb
+      additionalProperties: false
+      type: object
+      required:
+      - guest_gb
+      title: HostProfileMemory
+      description: 'Guest RAM, as the client resolved it.
+
+
+        Not host RAM: the sizing rules are per-GPU-profile and live in chutes-cvm, so the client sends
+
+        the answer. Storing the host total instead would split hosts that measure identically -- 2007
+
+        and 2011 GB are one H200 class.'
+    HostProfileNvswitchDevice:
+      properties:
+        vendor:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Vendor
+        device_id:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Device Id
+        pci_class:
+          type: string
+          pattern: ^([0-9a-fA-F]{4})?$
+          title: Pci Class
+        numa_node:
+          type: integer
+          maximum: 64.0
+          minimum: -1.0
+          title: Numa Node
+        bars:
+          items:
+            $ref: '#/components/schemas/HostProfilePciBar'
+          type: array
+          maxItems: 6
+          title: Bars
+      additionalProperties: false
+      type: object
+      required:
+      - vendor
+      - device_id
+      - pci_class
+      - numa_node
+      - bars
+      title: HostProfileNvswitchDevice
+      description: One NVSwitch. Its BARs shape the guest DSDT, so it is modeled like any other endpoint.
+    BootAttestationArgs:
+      properties:
+        quote:
+          type: string
+          title: Quote
+          description: Base64 encoded TDX quote
+        miner_hotkey:
+          type: string
+          title: Miner Hotkey
+          description: Miner hotkey that owns this VM
+        vm_name:
+          type: string
+          title: Vm Name
+          description: VM name/identifier
+        first_boot:
+          type: boolean
+          title: First Boot
+          description: True when the VM detected a fresh (re-downloaded) image via its LUKS2 header token
+          default: false
+      type: object
+      required:
+      - quote
+      - miner_hotkey
+      - vm_name
+      title: BootAttestationArgs
+      description: Request model for boot attestation.
+    HostProfileNuma:
+      properties:
+        node_count:
+          type: integer
+          maximum: 64.0
+          minimum: 1.0
+          title: Node Count
+      additionalProperties: false
+      type: object
+      required:
+      - node_count
+      title: HostProfileNuma
+      description: 'Host NUMA node count: it picks the guest''s memory-map and PXB-PCIe grouping.'
+    HostProfileGpuDevice:
+      properties:
+        vendor:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Vendor
+        device_id:
+          type: string
+          pattern: ^[0-9a-fA-F]{4}$
+          title: Device Id
+        pci_class:
+          type: string
+          pattern: ^([0-9a-fA-F]{4})?$
+          title: Pci Class
+        numa_node:
+          type: integer
+          maximum: 64.0
+          minimum: -1.0
+          title: Numa Node
+        bars:
+          items:
+            $ref: '#/components/schemas/HostProfilePciBar'
+          type: array
+          maxItems: 6
+          minItems: 1
+          title: Bars
+      additionalProperties: false
+      type: object
+      required:
+      - vendor
+      - device_id
+      - pci_class
+      - numa_node
+      - bars
+      title: HostProfileGpuDevice
+      description: 'One passthrough GPU.
+
+
+        Unlike the other endpoints, a GPU must report BARs. They are what the measurement generator
+
+        reproduces as a `pci-bar-stub`, so a GPU with none yields a guest whose MMIO windows -- and
+
+        therefore RTMR0 -- do not match any real boot. That is not a host we can measure, and storing
+
+        it would create a class whose published measurement nothing can attest against.'
+    HostProfileQemu:
+      properties:
+        qemu_version:
+          type: string
+          maxLength: 64
+          pattern: ^[0-9][0-9A-Za-z.+~:_-]*$
+          title: Qemu Version
+      additionalProperties: false
+      type: object
+      required:
+      - qemu_version
+      title: HostProfileQemu
+      description: The QEMU that builds the guest ACPI measured into RTMR0.
+    ServerArgs:
+      properties:
+        host:
+          type: string
+          title: Host
+          description: Public IP address or DNS Name of the server
+        id:
+          type: string
+          title: Id
+          description: Server ID (e.g. k8s node uid)
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Server name (defaults to server id if omitted)
+        gpus:
+          items:
+            $ref: '#/components/schemas/NodeArgs'
+          type: array
+          title: Gpus
+          description: GPU info for this server
+      type: object
+      required:
+      - host
+      - id
+      - gpus
+      title: ServerArgs
+      description: Request model for server registration.
+    LuksConfirmRequest:
+      properties:
+        volumes:
+          additionalProperties:
+            $ref: '#/components/schemas/LuksVolumeConfirmStatus'
+          type: object
+          title: Volumes
+          description: Per-volume rotation result reported by the VM
+      type: object
+      required:
+      - volumes
+      title: LuksConfirmRequest
+      description: Request model for POST /luks/confirm.
+    LuksAttestRequest:
+      properties:
+        quote:
+          type: string
+          title: Quote
+          description: Base64-encoded TDX quote (runtime type, RTMR3 extended)
+        volumes:
+          items:
+            type: string
+          type: array
+          title: Volumes
+          description: Volume names to rotate passphrases for
+      type: object
+      required:
+      - quote
+      - volumes
+      title: LuksAttestRequest
+      description: Request model for POST /luks/attest.
+    LuksVolumeConfirmStatus:
+      properties:
+        rotated:
+          type: boolean
+          title: Rotated
+          description: True if passphrase rotation succeeded for this volume; False to discard pending
+      type: object
+      required:
+      - rotated
+      title: LuksVolumeConfirmStatus
+      description: Confirm status for a single volume.
+    HostProfilePciBar:
+      properties:
+        index:
+          type: integer
+          exclusiveMaximum: 6.0
+          minimum: 0.0
+          title: Index
+        size_mb:
+          type: integer
+          maximum: 16777216.0
+          minimum: 0.0
+          title: Size Mb
+        kind:
+          type: string
+          pattern: ^[mp](32|64)$
+          title: Kind
+      additionalProperties: false
+      type: object
+      required:
+      - index
+      - size_mb
+      - kind
+      title: HostProfilePciBar
+      description: 'One MMIO window of a passthrough device, from an lspci "Region N" line.
+
+
+        Offline measurement generation reproduces these windows with a ``pci-bar-stub``, so the
+
+        guest ACPI it measures matches what a real passthrough launch produces -- which makes the
+
+        layout an RTMR0 input, and part of the class fingerprint. Most BARs are fixed per GPU model,
+
+        but the large one (BAR2 on H200/B200/RTX) is RESIZABLE: host firmware sets its current size,
+
+        so two otherwise identical machines can need different RTMR0s. Fingerprinting the layout is
+
+        what keeps those apart instead of collapsing them into one class whose measurement only one
+
+        of them can attest against.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

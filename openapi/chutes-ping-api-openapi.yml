@@ -1,0 +1,26 @@
+openapi: 3.2.0
+info:
+  title: Fast Ping API
+  version: 0.1.0
+tags:
+- name: Ping
+paths:
+  /ping:
+    get:
+      summary: Ping
+      operationId: ping_ping_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+      - Ping
+components:
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

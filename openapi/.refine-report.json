@@ -1,29 +1,74 @@
 {
   "provider": "chutes",
   "sources": [
-    "_original/chutes-openapi.yml"
+    "_original/chutes-openapi.json"
   ],
   "outputs": [
-    "chutes-chat-api-openapi.yml",
+    "chutes-well-known-api-openapi.yml",
+    "chutes-audit-api-openapi.yml",
+    "chutes-authentication-api-openapi.yml",
     "chutes-chutes-api-openapi.yml",
+    "chutes-configguesser-api-openapi.yml",
+    "chutes-e2e-encryption-api-openapi.yml",
+    "chutes-encrypted-logs-api-openapi.yml",
+    "chutes-external-backends-api-openapi.yml",
+    "chutes-external-operations-api-openapi.yml",
+    "chutes-identity-provider-api-openapi.yml",
     "chutes-images-api-openapi.yml",
-    "chutes-models-api-openapi.yml"
+    "chutes-instances-api-openapi.yml",
+    "chutes-invocations-api-openapi.yml",
+    "chutes-job-api-openapi.yml",
+    "chutes-logo-api-openapi.yml",
+    "chutes-logs-api-openapi.yml",
+    "chutes-metrics-api-openapi.yml",
+    "chutes-miner-api-openapi.yml",
+    "chutes-miscellaneous-api-openapi.yml",
+    "chutes-model-aliases-api-openapi.yml",
+    "chutes-nodes-api-openapi.yml",
+    "chutes-payments-api-openapi.yml",
+    "chutes-ping-api-openapi.yml",
+    "chutes-pricing-api-openapi.yml",
+    "chutes-secret-api-openapi.yml",
+    "chutes-servers-api-openapi.yml",
+    "chutes-users-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 1 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "chutes-openapi.yml: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
-    "superseded outputs removed: chutes-chat-completions-api-openapi.yml",
-    "apis.yml register: written (+1 apis, 4 total)"
+    "chutes-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "chutes-openapi.json: tagged paths GET /ping -> Ping",
+    "chutes-openapi.json: tagged paths GET /_metrics -> Metrics",
+    "chutes-openapi.json: tagged paths GET /.well-known/openid-configuration -> .well Known",
+    "chutes-openapi.json: declared missing tag: .well Known",
+    "chutes-openapi.json: declared missing tag: Audit",
+    "chutes-openapi.json: declared missing tag: Authentication",
+    "chutes-openapi.json: declared missing tag: Chutes",
+    "chutes-openapi.json: declared missing tag: ConfigGuesser",
+    "chutes-openapi.json: declared missing tag: E2E Encryption",
+    "chutes-openapi.json: declared missing tag: Encrypted Logs",
+    "chutes-openapi.json: declared missing tag: External Backends",
+    "chutes-openapi.json: declared missing tag: External Operations",
+    "chutes-openapi.json: declared missing tag: Identity Provider",
+    "chutes-openapi.json: declared missing tag: Images",
+    "chutes-openapi.json: declared missing tag: Instances",
+    "chutes-openapi.json: declared missing tag: Invocations",
+    "chutes-openapi.json: declared missing tag: Job",
+    "chutes-openapi.json: declared missing tag: Logo",
+    "chutes-openapi.json: declared missing tag: Logs",
+    "chutes-openapi.json: declared missing tag: Metrics",
+    "chutes-openapi.json: declared missing tag: Miner",
+    "chutes-openapi.json: declared missing tag: Miscellaneous",
+    "chutes-openapi.json: declared missing tag: Model Aliases",
+    "chutes-openapi.json: declared missing tag: Nodes",
+    "chutes-openapi.json: declared missing tag: Payments",
+    "chutes-openapi.json: declared missing tag: Ping",
+    "chutes-openapi.json: declared missing tag: Pricing",
+    "chutes-openapi.json: declared missing tag: Secret",
+    "chutes-openapi.json: declared missing tag: Servers",
+    "chutes-openapi.json: declared missing tag: Users",
+    "apis.yml register: written (+25 apis, 27 total)"
   ],
-  "skipped": [
-    "chutes-chat-completions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "chutes-chutes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "chutes-images-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "chutes-models-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

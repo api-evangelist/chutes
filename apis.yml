@@ -112,16 +112,16 @@ apis:
     url: https://chutes.ai/docs/core-concepts/templates
   - type: APIReference
     url: https://chutes.ai/docs/api-reference/images
-- aid: chutes:chutes-models-api
-  name: Chutes Models API
-  description: List models available on the Chutes network.
+- aid: chutes:chutes-audit-api
+  name: Chutes Audit API
+  description: The Audit API from Chutes — 3 operation(s) for audit.
   humanURL: https://chutes.ai/docs/examples/llm-chat
   baseURL: https://llm.chutes.ai/v1
   tags:
-  - Models
+  - Audit
   properties:
   - type: OpenAPI
-    url: openapi/chutes-models-api-openapi.yml
+    url: openapi/chutes-audit-api-openapi.yml
   - type: Documentation
     url: https://chutes.ai/docs/examples/llm-chat
   - type: APIReference
@@ -140,16 +140,660 @@ apis:
     url: https://chutes.ai/docs/core-concepts/templates
   - type: APIReference
     url: https://chutes.ai/docs/api-reference/images
-- aid: chutes:chutes-chat-completions-api
-  name: Chutes Chat Completions API
-  description: OpenAI-compatible chat completions.
+- aid: chutes:chutes-authentication-api
+  name: Chutes Authentication API
+  description: The Authentication API from Chutes — 3 operation(s) for authentication.
   humanURL: https://chutes.ai/docs/examples/llm-chat
   baseURL: https://llm.chutes.ai/v1
   tags:
-  - Chat Completions
+  - Authentication
   properties:
   - type: OpenAPI
-    url: openapi/chutes-chat-completions-api-openapi.yml
+    url: openapi/chutes-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-configguesser-api
+  name: Chutes Config Guesser API
+  description: The ConfigGuesser API from Chutes — 1 operation(s) for configguesser.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - ConfigGuesser
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-configguesser-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-e2e-encryption-api
+  name: Chutes E2E Encryption API
+  description: The E2E Encryption API from Chutes — 2 operation(s) for e2e encryption.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - E2E Encryption
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-e2e-encryption-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-encrypted-logs-api
+  name: Chutes Encrypted Logs API
+  description: The Encrypted Logs API from Chutes — 2 operation(s) for encrypted logs.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Encrypted Logs
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-encrypted-logs-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-external-backends-api
+  name: Chutes External Backends API
+  description: The External Backends API from Chutes — 8 operation(s) for external backends.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - External Backends
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-external-backends-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-external-operations-api
+  name: Chutes External Operations API
+  description: The External Operations API from Chutes — 5 operation(s) for external operations.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - External Operations
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-external-operations-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-identity-provider-api
+  name: Chutes Identity Provider API
+  description: The Identity Provider API from Chutes — 18 operation(s) for identity provider.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Identity Provider
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-identity-provider-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-instances-api
+  name: Chutes Instances API
+  description: The Instances API from Chutes — 16 operation(s) for instances.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Instances
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-instances-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-invocations-api
+  name: Chutes Invocations API
+  description: The Invocations API from Chutes — 5 operation(s) for invocations.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Invocations
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-invocations-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-job-api
+  name: Chutes Job API
+  description: The Job API from Chutes — 4 operation(s) for job.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Job
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-job-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-logo-api
+  name: Chutes Logo API
+  description: The Logo API from Chutes — 2 operation(s) for logo.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Logo
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-logo-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-logs-api
+  name: Chutes Logs API
+  description: The Logs API from Chutes — 1 operation(s) for logs.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Logs
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-logs-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-metrics-api
+  name: Chutes Metrics API
+  description: The Metrics API from Chutes — 1 operation(s) for metrics.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-miner-api
+  name: Chutes Miner API
+  description: The Miner API from Chutes — 17 operation(s) for miner.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Miner
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-miner-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-miscellaneous-api
+  name: Chutes Miscellaneous API
+  description: The Miscellaneous API from Chutes — 2 operation(s) for miscellaneous.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Miscellaneous
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-miscellaneous-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-model-aliases-api
+  name: Chutes Model Aliases API
+  description: The Model Aliases API from Chutes — 2 operation(s) for model aliases.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Model Aliases
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-model-aliases-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-nodes-api
+  name: Chutes Nodes API
+  description: The Nodes API from Chutes — 4 operation(s) for nodes.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Nodes
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-nodes-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-payments-api
+  name: Chutes Payments API
+  description: The Payments API from Chutes — 6 operation(s) for payments.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-payments-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-ping-api
+  name: Chutes Ping API
+  description: The Ping API from Chutes — 1 operation(s) for ping.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Ping
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-ping-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-pricing-api
+  name: Chutes Pricing API
+  description: The Pricing API from Chutes — 6 operation(s) for pricing.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Pricing
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-pricing-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-secret-api
+  name: Chutes Secret API
+  description: The Secret API from Chutes — 2 operation(s) for secret.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Secret
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-secret-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-servers-api
+  name: Chutes Servers API
+  description: The Servers API from Chutes — 22 operation(s) for servers.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Servers
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-servers-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-users-api
+  name: Chutes Users API
+  description: The Users API from Chutes — 36 operation(s) for users.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-users-api-openapi.yml
+  - type: Documentation
+    url: https://chutes.ai/docs/examples/llm-chat
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/overview
+  - type: AsyncAPI
+    url: asyncapi/chutes-asyncapi.yml
+  - type: Postman
+    url: collections/chutes.postman_collection.json
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/cords
+  - type: Documentation
+    url: https://chutes.ai/docs/getting-started/running-a-chute
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/chutes
+  - type: Documentation
+    url: https://chutes.ai/docs/core-concepts/templates
+  - type: APIReference
+    url: https://chutes.ai/docs/api-reference/images
+- aid: chutes:chutes-well-known-api
+  name: Chutes .well Known API
+  description: The .well Known API from Chutes — 1 operation(s) for .well known.
+  humanURL: https://chutes.ai/docs/examples/llm-chat
+  baseURL: https://llm.chutes.ai/v1
+  tags:
+  - .well Known
+  properties:
+  - type: OpenAPI
+    url: openapi/chutes-well-known-api-openapi.yml
   - type: Documentation
     url: https://chutes.ai/docs/examples/llm-chat
   - type: APIReference

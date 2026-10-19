@@ -1,0 +1,1403 @@
+openapi: 3.2.0
+info:
+  title: Fast Identity Provider API
+  version: 0.1.0
+tags:
+- name: Identity Provider
+paths:
+  /idp/scopes:
+    get:
+      tags:
+      - Identity Provider
+      summary: List Scopes
+      description: 'List all available OAuth2 scopes with descriptions.
+
+        This endpoint is public and can be used for documentation or scope selection UIs.'
+      operationId: list_scopes_idp_scopes_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /idp/cli_login/nonce:
+    get:
+      tags:
+      - Identity Provider
+      summary: Get Cli Login Nonce
+      description: Get a nonce for CLI-based hotkey signature login.
+      operationId: get_cli_login_nonce_idp_cli_login_nonce_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /idp/cli_login:
+    get:
+      tags:
+      - Identity Provider
+      summary: Cli Login
+      description: CLI login endpoint for hotkey signature authentication.
+      operationId: cli_login_idp_cli_login_get
+      parameters:
+      - name: hotkey
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Hotkey
+      - name: signature
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Signature
+      - name: nonce
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Nonce
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps:
+    get:
+      tags:
+      - Identity Provider
+      summary: List Apps
+      description: 'List OAuth applications.
+
+
+        By default, returns apps owned by the current user, public apps, and apps shared with the user.
+
+        Set include_public=false to exclude public apps.
+
+        Set include_shared=false to exclude apps shared with the user.
+
+        Use search to filter by name or description.'
+      operationId: list_apps_idp_apps_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: include_public
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: true
+          title: Include Public
+      - name: include_shared
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: true
+          title: Include Shared
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Search
+      - name: page
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 0
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 25
+          title: Limit
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Identity Provider
+      summary: Create App
+      description: Create a new OAuth application.
+      operationId: create_app_idp_apps_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthAppCreateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps/{app_id}:
+    get:
+      tags:
+      - Identity Provider
+      summary: Get App
+      description: Get details of an OAuth application.
+      operationId: get_app_idp_apps__app_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - Identity Provider
+      summary: Update App
+      description: Update an OAuth application.
+      operationId: update_app_idp_apps__app_id__patch
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthAppUpdateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Identity Provider
+      summary: Delete App
+      description: Delete an OAuth application.
+      operationId: delete_app_idp_apps__app_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps/{app_id}/regenerate-secret:
+    post:
+      tags:
+      - Identity Provider
+      summary: Regenerate App Secret
+      description: Regenerate the client secret for an OAuth application.
+      operationId: regenerate_app_secret_idp_apps__app_id__regenerate_secret_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps/{app_id}/share:
+    post:
+      tags:
+      - Identity Provider
+      summary: Share App
+      description: Share an OAuth application with another user.
+      operationId: share_app_idp_apps__app_id__share_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthAppShareArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps/{app_id}/share/{user_id}:
+    delete:
+      tags:
+      - Identity Provider
+      summary: Unshare App
+      description: Remove sharing of an OAuth application with a user.
+      operationId: unshare_app_idp_apps__app_id__share__user_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/apps/{app_id}/shares:
+    get:
+      tags:
+      - Identity Provider
+      summary: List App Shares
+      description: List users an OAuth application is shared with.
+      operationId: list_app_shares_idp_apps__app_id__shares_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/authorizations:
+    get:
+      tags:
+      - Identity Provider
+      summary: List Authorizations
+      description: List apps the current user has authorized.
+      operationId: list_authorizations_idp_authorizations_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 0
+          title: Page
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 25
+          title: Limit
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/authorizations/{app_id}:
+    delete:
+      tags:
+      - Identity Provider
+      summary: Revoke App Authorization
+      description: Revoke authorization for an app.
+      operationId: revoke_app_authorization_idp_authorizations__app_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/authorize:
+    get:
+      tags:
+      - Identity Provider
+      summary: Authorize Get
+      description: 'OAuth2 Authorization Endpoint.
+
+        Displays login page if not authenticated, consent page if authenticated.
+
+        Checks for existing chutes-session-token cookie for SSO.'
+      operationId: authorize_get_idp_authorize_get
+      parameters:
+      - name: response_type
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Response Type
+      - name: client_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Client Id
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Redirect Uri
+      - name: scope
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scope
+      - name: state
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+      - name: code_challenge
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code Challenge
+      - name: code_challenge_method
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code Challenge Method
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/login:
+    post:
+      tags:
+      - Identity Provider
+      summary: Login Post
+      description: Handle login form submission.
+      operationId: login_post_idp_login_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_login_post_idp_login_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/authorize/consent:
+    get:
+      tags:
+      - Identity Provider
+      summary: Authorize Consent Page
+      description: Show authorization consent page.
+      operationId: authorize_consent_page_idp_authorize_consent_get
+      parameters:
+      - name: session_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Identity Provider
+      summary: Authorize Consent
+      description: Handle authorization consent form submission.
+      operationId: authorize_consent_idp_authorize_consent_post
+      parameters:
+      - name: session_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_authorize_consent_idp_authorize_consent_post'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/token:
+    post:
+      tags:
+      - Identity Provider
+      summary: Token Endpoint
+      description: OAuth2 Token Endpoint.
+      operationId: token_endpoint_idp_token_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_token_endpoint_idp_token_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/token/revoke:
+    post:
+      tags:
+      - Identity Provider
+      summary: Revoke Token Endpoint
+      description: OAuth2 Token Revocation Endpoint (RFC 7009).
+      operationId: revoke_token_endpoint_idp_token_revoke_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_revoke_token_endpoint_idp_token_revoke_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /idp/userinfo:
+    get:
+      tags:
+      - Identity Provider
+      summary: Userinfo Endpoint
+      description: OpenID Connect UserInfo Endpoint.
+      operationId: userinfo_endpoint_idp_userinfo_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /idp/token/introspect:
+    post:
+      tags:
+      - Identity Provider
+      summary: Introspect Token
+      description: 'OAuth2 Token Introspection Endpoint (RFC 7662).
+
+
+        Token format includes embedded token_id for O(1) lookup, so client auth is optional.
+
+
+        Allows clients to check if a token is still valid and get metadata about it.
+
+        Useful for determining if a user needs to re-authenticate.
+
+
+        Returns:
+
+        - active: Whether the token is currently valid
+
+        - exp: Expiration timestamp (Unix epoch)
+
+        - iat: Issued at timestamp
+
+        - scope: Space-separated list of scopes
+
+        - client_id: The client that the token was issued to
+
+        - username: The user''s username
+
+        - sub: The user''s ID'
+      operationId: introspect_token_idp_token_introspect_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_introspect_token_idp_token_introspect_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OAuthAppCreateRequest:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        redirect_uris:
+          items:
+            type: string
+          type: array
+          title: Redirect Uris
+        homepage_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Homepage Url
+        logo_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Url
+        public:
+          type: boolean
+          title: Public
+          default: true
+        refresh_token_lifetime_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Refresh Token Lifetime Days
+          default: 30
+        allowed_scopes:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Scopes
+      type: object
+      required:
+      - name
+      - redirect_uris
+      title: OAuthAppCreateRequest
+      description: Request model for creating an OAuth application.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Body_token_endpoint_idp_token_post:
+      properties:
+        grant_type:
+          type: string
+          title: Grant Type
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        redirect_uri:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Uri
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+        refresh_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refresh Token
+        code_verifier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code Verifier
+      type: object
+      required:
+      - grant_type
+      title: Body_token_endpoint_idp_token_post
+    Body_introspect_token_idp_token_introspect_post:
+      properties:
+        token:
+          type: string
+          title: Token
+        token_type_hint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Type Hint
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      required:
+      - token
+      title: Body_introspect_token_idp_token_introspect_post
+    OAuthAppShareArgs:
+      properties:
+        app_id_or_name:
+          type: string
+          title: App Id Or Name
+        user_id_or_name:
+          type: string
+          title: User Id Or Name
+      type: object
+      required:
+      - app_id_or_name
+      - user_id_or_name
+      title: OAuthAppShareArgs
+      description: Request model for sharing an OAuth app.
+    OAuthAppUpdateRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        redirect_uris:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Redirect Uris
+        homepage_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Homepage Url
+        logo_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Url
+        active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Active
+        public:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Public
+        refresh_token_lifetime_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Refresh Token Lifetime Days
+        allowed_scopes:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Scopes
+      type: object
+      title: OAuthAppUpdateRequest
+      description: Request model for updating an OAuth application.
+    Body_revoke_token_endpoint_idp_token_revoke_post:
+      properties:
+        token:
+          type: string
+          title: Token
+        token_type_hint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Token Type Hint
+      type: object
+      required:
+      - token
+      title: Body_revoke_token_endpoint_idp_token_revoke_post
+    Body_authorize_consent_idp_authorize_consent_post:
+      properties:
+        action:
+          type: string
+          title: Action
+      type: object
+      required:
+      - action
+      title: Body_authorize_consent_idp_authorize_consent_post
+    Body_login_post_idp_login_post:
+      properties:
+        client_id:
+          type: string
+          title: Client Id
+        redirect_uri:
+          type: string
+          title: Redirect Uri
+        state:
+          type: string
+          title: State
+          default: ''
+        scope:
+          type: string
+          title: Scope
+          default: ''
+        auth_method:
+          type: string
+          title: Auth Method
+        code_challenge:
+          type: string
+          title: Code Challenge
+          default: ''
+        code_challenge_method:
+          type: string
+          title: Code Challenge Method
+          default: ''
+        fingerprint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fingerprint
+        hotkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Hotkey
+        signature:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Signature
+        nonce:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nonce
+      type: object
+      required:
+      - client_id
+      - redirect_uri
+      - auth_method
+      title: Body_login_post_idp_login_post
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

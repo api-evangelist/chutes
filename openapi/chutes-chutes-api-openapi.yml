@@ -1,380 +1,1819 @@
 openapi: 3.2.0
 info:
-  title: Chutes API
-  description: 'Specification of the Chutes API. Chutes is a permissionless, serverless AI compute platform on Bittensor Subnet 64. It exposes two REST surfaces: an OpenAI-compatible inference endpoint at https://llm.chutes.ai/v1 for chat completions and model listing across hundreds of open-source models, and a management API at https://api.chutes.ai for building images and deploying, listing, and operating chutes (serverless AI apps). All requests authenticate with a Bearer API key (prefix `cpk_`).'
-  termsOfService: https://chutes.ai/terms
-  contact:
-    name: Chutes Support
-    url: https://chutes.ai/docs
-  version: '1.0'
-servers:
-- url: https://llm.chutes.ai/v1
-  description: OpenAI-compatible LLM inference endpoint (chat completions, models).
-- url: https://api.chutes.ai
-  description: Management API for chutes and images.
-security:
-- bearerAuth: []
+  title: Fast Chutes API
+  version: 0.1.0
 tags:
 - name: Chutes
-  description: Deploy, list, retrieve, update, and delete chutes.
 paths:
-  /chutes/:
-    get:
-      operationId: listChutes
-      servers:
-      - url: https://api.chutes.ai
+  /chutes/share:
+    post:
       tags:
       - Chutes
-      summary: List chutes
+      summary: Share Chute
+      description: Share a chute with another user.
+      operationId: share_chute_chutes_share_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChuteShareArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/unshare:
+    post:
+      tags:
+      - Chutes
+      summary: Unshare Chute
+      description: Unshare a chute with another user.
+      operationId: unshare_chute_chutes_unshare_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChuteShareArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/make_public:
+    post:
+      tags:
+      - Chutes
+      summary: Make Public
+      description: Promote subnet chutes to public visibility, owned by the calling subnet admin user.
+      operationId: make_public_chutes_make_public_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakePublicArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/boosted:
+    get:
+      tags:
+      - Chutes
+      summary: List Boosted Chutes
+      description: Get a list of chutes that have a boost.
+      operationId: list_boosted_chutes_chutes_boosted_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/affine_available:
+    get:
+      tags:
+      - Chutes
+      summary: List Available Affine Chutes
+      description: Get a list of affine chutes where the creator/user has a non-zero balance.
+      operationId: list_available_affine_chutes_chutes_affine_available_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/:
+    get:
+      tags:
+      - Chutes
+      summary: List Chutes
       description: List (and optionally filter/paginate) chutes.
+      operationId: list_chutes_chutes__get
+      security:
+      - APIKeyHeader: []
       parameters:
       - name: include_public
         in: query
         required: false
         schema:
-          type: boolean
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Include Public
       - name: template
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Template
       - name: name
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      - name: exclude
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Exclude
       - name: image
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image
       - name: slug
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Slug
       - name: page
         in: query
         required: false
         schema:
           type: integer
+          maximum: 100
+          minimum: 0
+          default: 0
+          title: Page
       - name: limit
         in: query
         required: false
         schema:
           type: integer
+          maximum: 5000
+          minimum: 1
+          default: 25
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 5000
+          minimum: 0
+          default: 0
+          title: Offset
+      - name: include_schemas
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Include Schemas
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
       responses:
         '200':
-          description: OK
+          description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ChuteList'
-        '422':
-          description: Validation error.
-    post:
-      operationId: deployChute
-      servers:
-      - url: https://api.chutes.ai
-      tags:
-      - Chutes
-      summary: Deploy a chute
-      description: Standard deploy from the Chutes development kit (CDK). Stores the chute code, image reference, node selector, and configuration, then schedules it onto suitable miner GPU capacity.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeployChuteRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Chute'
-        '422':
-          description: Validation error.
-  /chutes/{chute_id_or_name}:
-    get:
-      operationId: getChute
-      servers:
-      - url: https://api.chutes.ai
-      tags:
-      - Chutes
-      summary: Get a chute
-      description: Retrieve a chute's details by ID or name.
-      parameters:
-      - name: chute_id_or_name
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Chute'
-        '404':
-          description: Not found.
-    put:
-      operationId: updateChute
-      servers:
-      - url: https://api.chutes.ai
-      tags:
-      - Chutes
-      summary: Update a chute
-      description: Update chute metadata such as readme, tagline, logo, and autoscaling settings.
-      parameters:
-      - name: chute_id_or_name
-        in: path
-        required: true
-        schema:
-          type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateChuteRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Chute'
-        '422':
-          description: Validation error.
-  /chutes/{chute_id}:
-    delete:
-      operationId: deleteChute
-      servers:
-      - url: https://api.chutes.ai
-      tags:
-      - Chutes
-      summary: Delete a chute
-      description: Remove a chute by ID.
-      parameters:
-      - name: chute_id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Not found.
-  /chutes/code/{chute_id}:
-    get:
-      operationId: getChuteCode
-      servers:
-      - url: https://api.chutes.ai
-      tags:
-      - Chutes
-      summary: Get chute code
-      description: Load a chute's source code by ID or name.
-      parameters:
-      - name: chute_id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            text/plain:
               schema:
                 type: string
-  /chutes/{chute_id}/hf_info:
-    get:
-      operationId: getChuteHfInfo
-      servers:
-      - url: https://api.chutes.ai
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
       tags:
       - Chutes
-      summary: Get Hugging Face info
-      description: Return the Hugging Face repo_id and revision for a chute, used by miners to pre-download model weights.
+      summary: Deploy Chute
+      description: Standard deploy from the CDK.
+      operationId: deploy_chute_chutes__post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: accept_fee
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+          title: Accept Fee
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChuteArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/rolling_updates:
+    get:
+      tags:
+      - Chutes
+      summary: List Rolling Updates
+      operationId: list_rolling_updates_chutes_rolling_updates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/gpu_count_history:
+    get:
+      tags:
+      - Chutes
+      summary: Get Gpu Count History
+      operationId: get_gpu_count_history_chutes_gpu_count_history_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/miner_means:
+    get:
+      tags:
+      - Chutes
+      summary: Get Chute Miner Mean Index
+      operationId: get_chute_miner_mean_index_chutes_miner_means_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/miner_means/{chute_id}.{ext}:
+    get:
+      tags:
+      - Chutes
+      summary: Get Chute Miner Means
+      description: Load a chute's mean TPS and output token count by miner ID.
+      operationId: get_chute_miner_means_chutes_miner_means__chute_id___ext__get
       parameters:
       - name: chute_id
         in: path
         required: true
         schema:
           type: string
+          title: Chute Id
+      - name: ext
+        in: path
+        required: true
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ext
       responses:
         '200':
-          description: OK
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HfInfo'
-  /chutes/warmup/{chute_id_or_name}:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/miner_means/{chute_id}:
     get:
-      operationId: warmupChute
-      servers:
-      - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Warm up a chute
-      description: Activate a chute (cold start) with an optional quick status check.
+      summary: Get Chute Miner Means
+      description: Load a chute's mean TPS and output token count by miner ID.
+      operationId: get_chute_miner_means_chutes_miner_means__chute_id__get
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: ext
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ext
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/code/{chute_id}:
+    get:
+      tags:
+      - Chutes
+      summary: Get Chute Code
+      description: Load a chute's code by ID or name.
+      operationId: get_chute_code_chutes_code__chute_id__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/{chute_id}/hf_info:
+    get:
+      tags:
+      - Chutes
+      summary: Get Chute Hf Info
+      description: 'Return Hugging Face repo_id and revision for a chute so miners can predownload the model.
+
+        Miner-only; responses are cached by chute_id via aiocache.'
+      operationId: get_chute_hf_info_chutes__chute_id__hf_info_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/warmup/{chute_id_or_name}:
+    get:
+      tags:
+      - Chutes
+      summary: Warm Up Chute
+      description: 'Warm up a chute.
+
+
+        With ?quick=true, performs a single status check, creates a bounty if needed,
+
+        and returns JSON immediately instead of holding an SSE connection open.'
+      operationId: warm_up_chute_chutes_warmup__chute_id_or_name__get
+      security:
+      - APIKeyHeader: []
       parameters:
       - name: chute_id_or_name
         in: path
         required: true
         schema:
           type: string
+          title: Chute Id Or Name
+      - name: quick
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Quick
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
       responses:
         '200':
-          description: OK
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /chutes/utilization:
     get:
-      operationId: getChutesUtilization
-      servers:
-      - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Get utilization
-      description: Obtain utilization data from recent capacity logs.
+      summary: Get Chute Utilization
+      description: Get chute utilization data from the most recent capacity log.
+      operationId: get_chute_utilization_chutes_utilization_get
       responses:
         '200':
-          description: OK
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /chutes/{chute_id_or_name}/evidence:
+    get:
+      tags:
+      - Chutes
+      summary: Get Tee Chute Evidence
+      description: 'Get TEE evidence for all instances of a chute (quote, GPU evidence, certificate per instance).
+
+
+        Args:
+
+        chute_id_or_name: Chute ID or name
+
+        nonce: User-provided nonce (64 hex characters, 32 bytes)
+
+        include_amd: Include AMD SEV-SNP instances (see the AMD evidence rollout in api.server.util)
+
+
+        Returns:
+
+        TeeChuteEvidence with array of TEE instance evidence per instance. AMD SEV-SNP instances
+
+        left out are listed in excluded_instance_ids, and the response then carries Deprecation
+
+        and Sunset headers naming the date they start being included by default.
+
+
+        Raises:
+
+        404: Chute not found
+
+        400: Invalid nonce format or chute not TEE-enabled
+
+        403: User cannot access chute
+
+        429: Rate limit exceeded (per caller, or per client IP when anonymous, plus a global
+
+        ceiling; 4xx responses only count toward a looser cap on all attempts)
+
+        500: Server attestation failures'
+      operationId: get_tee_chute_evidence_chutes__chute_id_or_name__evidence_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id Or Name
+      - name: nonce
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Nonce
+      - name: include_amd
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: 'Include AMD SEV-SNP instances (tee_type snp: the quote is an SEV-SNP attestation report). Set true once your verifier handles them. The default becomes true on the date in the Sunset header.'
+          default: false
+          title: Include Amd
+        description: 'Include AMD SEV-SNP instances (tee_type snp: the quote is an SEV-SNP attestation report). Set true once your verifier handles them. The default becomes true on the date in the Sunset header.'
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/{chute_id_or_name}:
+    get:
+      tags:
+      - Chutes
+      summary: Get Chute
+      description: Load a chute by ID or name.
+      operationId: get_chute_chutes__chute_id_or_name__get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id Or Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Chutes
+      summary: Update Common Attributes
+      description: Update readme, tagline, etc. (but not code, image, etc.).
+      operationId: update_common_attributes_chutes__chute_id_or_name__put
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id_or_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id Or Name
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChuteUpdateArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /chutes/{chute_id}:
+    delete:
+      tags:
+      - Chutes
+      summary: Delete Chute
+      description: Delete a chute by ID.
+      operationId: delete_chute_chutes__chute_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /chutes/vllm:
     post:
-      operationId: deployVllmChute
-      servers:
-      - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Deploy a templated vLLM chute
-      description: Deploy a templated vLLM model as a chute.
+      summary: Easy Deploy Vllm Chute
+      description: Easy/templated vLLM deployment.
+      operationId: easy_deploy_vllm_chute_chutes_vllm_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeployTemplateRequest'
+              $ref: '#/components/schemas/VLLMChuteArgs'
       responses:
         '200':
-          description: OK
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Chute'
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /chutes/diffusion:
     post:
-      operationId: deployDiffusionChute
-      servers:
-      - url: https://api.chutes.ai
       tags:
       - Chutes
-      summary: Deploy a templated diffusion chute
-      description: Deploy a templated diffusion (image generation) model as a chute.
+      summary: Easy Deploy Diffusion Chute
+      description: Easy/templated diffusion deployment.
+      operationId: easy_deploy_diffusion_chute_chutes_diffusion_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeployTemplateRequest'
+              $ref: '#/components/schemas/DiffusionChuteArgs'
       responses:
         '200':
-          description: OK
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Chute'
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /bounties/:
+    get:
+      tags:
+      - Chutes
+      summary: Get Bounty List
+      description: List available bounties, if any.
+      operationId: get_bounty_list_bounties__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /bounties/{chute_id}/increase:
+    get:
+      tags:
+      - Chutes
+      summary: Increase Chute Bounty
+      description: Increase bounty value (creating if not exists).
+      operationId: increase_chute_bounty_bounties__chute_id__increase_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: boost
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Boost
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HfInfo:
-      type: object
+    ValidationError:
       properties:
-        repo_id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-        revision:
+          title: Message
+        type:
           type: string
-    Chute:
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ChuteShareArgs:
       properties:
-        chute_id:
+        chute_id_or_name:
           type: string
+          title: Chute Id Or Name
+        user_id_or_name:
+          type: string
+          title: User Id Or Name
+      type: object
+      required:
+      - chute_id_or_name
+      - user_id_or_name
+      title: ChuteShareArgs
+    Port:
+      properties:
         name:
           type: string
-        slug:
+          title: Name
+        port:
+          type: integer
+          title: Port
+        default:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Default
+          default: true
+        proto:
           type: string
+          title: Proto
+      type: object
+      required:
+      - name
+      - port
+      title: Port
+    Cord:
+      properties:
+        method:
+          type: string
+          title: Method
+        path:
+          type: string
+          title: Path
+        function:
+          type: string
+          title: Function
+        stream:
+          type: boolean
+          title: Stream
+        passthrough:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Passthrough
+          default: false
+        public_api_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Public Api Path
+        public_api_method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Public Api Method
+        input_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input Schema
+          default: {}
+        output_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Schema
+          default: {}
+        output_content_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Output Content Type
+        minimal_input_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Minimal Input Schema
+          default: {}
+      type: object
+      required:
+      - method
+      - path
+      - function
+      - stream
+      title: Cord
+    Job:
+      properties:
+        name:
+          type: string
+          title: Name
+        upload:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Upload
+          default: false
+        timeout:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Timeout
+        ports:
+          items:
+            $ref: '#/components/schemas/Port'
+          type: array
+          title: Ports
+          default: []
+        disk_gb:
+          anyOf:
+          - type: integer
+            maximum: 1000.0
+            minimum: 10.0
+          - type: 'null'
+          title: Disk Gb
+          default: 10
+      type: object
+      required:
+      - name
+      title: Job
+    DiffusionChuteArgs:
+      properties:
+        model:
+          type: string
+          title: Model
+        name:
+          type: string
+          title: Name
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
         tagline:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tagline
+          default: ''
+        tool_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tool Description
         readme:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Readme
+          default: ''
+        public:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Public
+          default: true
+        node_selector:
+          anyOf:
+          - $ref: '#/components/schemas/NodeSelector'
+          - type: 'null'
+        concurrency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Concurrency
+          default: 1
+      type: object
+      required:
+      - model
+      - name
+      title: DiffusionChuteArgs
+    ChuteArgs:
+      properties:
+        name:
           type: string
+          maxLength: 128
+          minLength: 3
+          title: Name
+        tagline:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Tagline
+          default: ''
+        readme:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Readme
+          default: ''
+        tool_description:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Tool Description
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
         image:
           type: string
+          title: Image
         public:
           type: boolean
-        created_at:
+          title: Public
+        code:
           type: string
-          format: date-time
-    UpdateChuteRequest:
-      type: object
-      properties:
-        readme:
+          maxLength: 150000
+          title: Code
+        filename:
           type: string
-        tagline:
+          title: Filename
+        ref_str:
           type: string
-        logo:
-          type: string
-        scaling:
-          type: object
-          additionalProperties: true
-    DeployChuteRequest:
+          title: Ref Str
+        standard_template:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Standard Template
+        node_selector:
+          $ref: '#/components/schemas/NodeSelector'
+        cords:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Cord'
+            type: array
+          - type: 'null'
+          title: Cords
+          default: []
+        jobs:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Job'
+            type: array
+          - type: 'null'
+          title: Jobs
+          default: []
+        concurrency:
+          anyOf:
+          - type: integer
+            maximum: 256.0
+            minimum: 0.0
+          - type: 'null'
+          title: Concurrency
+        revision:
+          anyOf:
+          - type: string
+            pattern: ^[a-fA-F0-9]{40}$
+          - type: 'null'
+          title: Revision
+        max_instances:
+          anyOf:
+          - type: integer
+            maximum: 100.0
+            minimum: 1.0
+          - type: 'null'
+          title: Max Instances
+          default: 1
+        scaling_threshold:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Scaling Threshold
+          default: 0.75
+        shutdown_after_seconds:
+          anyOf:
+          - type: integer
+            maximum: 604800.0
+            minimum: 60.0
+          - type: 'null'
+          title: Shutdown After Seconds
+          default: 300
+        allow_external_egress:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow External Egress
+          default: false
+        encrypted_fs:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Encrypted Fs
+          default: false
+        tee:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Tee
+          default: false
+        lock_modules:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Lock Modules
+        use_rolling_update:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Use Rolling Update
+          default: true
       type: object
       required:
       - name
       - image
+      - public
+      - code
+      - filename
+      - ref_str
+      - node_selector
+      title: ChuteArgs
+    VLLMEngineArgs:
       properties:
-        name:
-          type: string
-        image:
-          type: string
-          description: Image ID or name:tag the chute runs from.
-        code:
-          type: string
-          description: Chute source code from the CDK.
-        node_selector:
-          type: object
-          description: GPU / node requirements (e.g. gpu_count, min_vram_gb).
-          additionalProperties: true
-        public:
-          type: boolean
-    DeployTemplateRequest:
+        tokenizer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tokenizer
+        max_model_len:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Max Model Len
+          default: 16384
+        enforce_eager:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Enforce Eager
+          default: false
+        trust_remote_code:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Trust Remote Code
+          default: true
       type: object
-      required:
-      - model
+      title: VLLMEngineArgs
+    VLLMChuteArgs:
       properties:
         model:
           type: string
-          description: Hugging Face model repo to template-deploy.
-        node_selector:
-          type: object
-          additionalProperties: true
+          title: Model
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
+        tagline:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tagline
+          default: ''
+        tool_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tool Description
+        readme:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Readme
+          default: ''
         public:
-          type: boolean
-    ChuteList:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Public
+          default: true
+        node_selector:
+          anyOf:
+          - $ref: '#/components/schemas/NodeSelector'
+          - type: 'null'
+        engine_args:
+          anyOf:
+          - $ref: '#/components/schemas/VLLMEngineArgs'
+          - type: 'null'
+        revision:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Revision
+        concurrency:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Concurrency
+          default: 8
       type: object
+      required:
+      - model
+      title: VLLMChuteArgs
+    MakePublicArgs:
       properties:
-        items:
-          type: array
+        chutes:
           items:
-            $ref: '#/components/schemas/Chute'
-        total:
-          type: integer
-        page:
-          type: integer
-        limit:
-          type: integer
+            type: string
+          type: array
+          title: Chutes
+      type: object
+      required:
+      - chutes
+      title: MakePublicArgs
+    NodeSelector:
+      properties:
+        gpu_count:
+          anyOf:
+          - type: integer
+            maximum: 8.0
+            minimum: 1.0
+          - type: 'null'
+          title: Gpu Count
+          default: 1
+        min_vram_gb_per_gpu:
+          anyOf:
+          - type: integer
+            maximum: 140.0
+            minimum: 16.0
+          - type: 'null'
+          title: Min Vram Gb Per Gpu
+          default: 16
+        max_hourly_price_per_gpu:
+          anyOf:
+          - type: number
+            exclusiveMaximum: 10.0
+            exclusiveMinimum: 0.0
+          - type: 'null'
+          title: Max Hourly Price Per Gpu
+        exclude:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Exclude
+        include:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Include
+        dynamic:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Dynamic
+          default: false
+      type: object
+      title: NodeSelector
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ChuteUpdateArgs:
+      properties:
+        tagline:
+          anyOf:
+          - type: string
+            maxLength: 1024
+          - type: 'null'
+          title: Tagline
+          default: ''
+        readme:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Readme
+          default: ''
+        tool_description:
+          anyOf:
+          - type: string
+            maxLength: 16384
+          - type: 'null'
+          title: Tool Description
+          default: ''
+        logo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Logo Id
+        max_instances:
+          anyOf:
+          - type: integer
+            maximum: 100.0
+            minimum: 1.0
+          - type: 'null'
+          title: Max Instances
+        scaling_threshold:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Scaling Threshold
+        shutdown_after_seconds:
+          anyOf:
+          - type: integer
+            maximum: 604800.0
+            minimum: 60.0
+          - type: 'null'
+          title: Shutdown After Seconds
+          default: 300
+        disabled:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Disabled
+      type: object
+      title: ChuteUpdateArgs
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      description: 'Chutes API key passed as `Authorization: Bearer cpk_...`. Management endpoints alternatively accept a Bittensor hotkey signature (X-Chutes-Hotkey, X-Chutes-Signature, X-Chutes-Nonce).'
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

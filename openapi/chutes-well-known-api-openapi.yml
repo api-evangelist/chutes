@@ -1,0 +1,27 @@
+openapi: 3.2.0
+info:
+  title: Fast .well Known API
+  version: 0.1.0
+tags:
+- name: .well Known
+paths:
+  /.well-known/openid-configuration:
+    get:
+      summary: Openid Configuration Root
+      description: OpenID Connect Discovery endpoint.
+      operationId: openid_configuration_root__well_known_openid_configuration_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+      - .well Known
+components:
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization

@@ -1,0 +1,1375 @@
+openapi: 3.2.0
+info:
+  title: Fast Instances API
+  version: 0.1.0
+tags:
+- name: Instances
+paths:
+  /instances/reconciliation_csv:
+    get:
+      tags:
+      - Instances
+      summary: Get Instance Reconciliation Csv
+      description: Get all instance audit instance_id, deleted_at records to help reconcile audit data.
+      operationId: get_instance_reconciliation_csv_instances_reconciliation_csv_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /instances/compute_history_csv:
+    get:
+      tags:
+      - Instances
+      summary: Get Instance Compute History Csv
+      description: 'Get instance_compute_history records for the scoring period (last 7 days + buffer).
+
+        Used by the auditor to reconcile compute history data on startup.'
+      operationId: get_instance_compute_history_csv_instances_compute_history_csv_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /instances/launch_config:
+    get:
+      tags:
+      - Instances
+      summary: Get Launch Config
+      operationId: get_launch_config_instances_launch_config_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: server_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Server Id
+      - name: job_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Job Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/nonce:
+    get:
+      tags:
+      - Instances
+      summary: Get Rint Nonce
+      description: 'Get runtime integrity nonce for a launch config.
+
+
+        This endpoint consumes the nonce from Redis (one-time use).
+
+        Only available for chutes_version >= 0.4.9.'
+      operationId: get_rint_nonce_instances_launch_config__config_id__nonce_get
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/tee:
+    post:
+      tags:
+      - Instances
+      summary: Claim Tee Launch Config
+      description: Claim a TEE launch config, verify attestation, and receive symmetric key.
+      operationId: claim_tee_launch_config_instances_launch_config__config_id__tee_post
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeeLaunchConfigArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Instances
+      summary: Verify Tee Launch Config Instance
+      description: Verify TEE launch config instance by validating symmetric key usage via dummy ports.
+      operationId: verify_tee_launch_config_instance_instances_launch_config__config_id__tee_put
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/attest:
+    post:
+      tags:
+      - Instances
+      summary: Validate Tee Launch Config Instance
+      operationId: validate_tee_launch_config_instance_instances_launch_config__config_id__attest_post
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegacyTeeLaunchConfigArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}:
+    post:
+      tags:
+      - Instances
+      summary: Claim Launch Config
+      operationId: claim_launch_config_instances_launch_config__config_id__post
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LaunchConfigArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Instances
+      summary: Verify Launch Config Instance
+      operationId: verify_launch_config_instance_instances_launch_config__config_id__put
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/graval:
+    post:
+      tags:
+      - Instances
+      summary: Claim Graval Launch Config
+      description: Claim a Graval launch config and receive PoVW challenge.
+      operationId: claim_graval_launch_config_instances_launch_config__config_id__graval_post
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LaunchConfigArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Instances
+      summary: Verify Graval Launch Config Instance
+      description: Verify Graval launch config instance by validating PoVW proof and symmetric key usage.
+      operationId: verify_graval_launch_config_instance_instances_launch_config__config_id__graval_put
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/activate:
+    get:
+      tags:
+      - Instances
+      summary: Activate Launch Config Instance
+      operationId: activate_launch_config_instance_instances_launch_config__config_id__activate_get
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/launch_config/{config_id}/logs:
+    post:
+      tags:
+      - Instances
+      summary: Ingest Chute Logs
+      description: 'Ingest chute pod logs streamed by the in-guest log shipper.
+
+
+        mTLS-only, via the cvm proxy: the guest presents its per-boot registry mTLS leaf and the
+
+        ``resolve_log_context`` dependency binds the shipment to the launch-config owner (cross-miner
+
+        injection is rejected there; the auth result is cached per (config_id, cert) so a burst of
+
+        batches doesn''t re-verify). Identity is derived server-side — the body carries only
+
+        ``deployment_id`` + the log lines.
+
+
+        Cutoff contract (docs/specs/chute-log-shipper.md): **204** = stop capturing this pod,
+
+        **200** = keep sending, **403/404** = terminal reject (unauthorized / unknown config), which
+
+        the guest also treats as stop. The lines are ingested BEFORE the cutoff is evaluated so a
+
+        final crash batch is always stored.'
+      operationId: ingest_chute_logs_instances_launch_config__config_id__logs_post
+      parameters:
+      - name: config_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Config Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogShipmentArgs'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/nonce:
+    get:
+      tags:
+      - Instances
+      summary: Get Instance Nonce
+      description: 'Generate a nonce for TEE instance verification.
+
+
+        This endpoint is called by chute instances during TEE verification (Phase 1).
+
+        The nonce is used to bind the attestation evidence to this specific verification request.'
+      operationId: get_instance_nonce_instances_nonce_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+  /instances/token_check:
+    get:
+      tags:
+      - Instances
+      summary: Get Token
+      operationId: get_token_instances_token_check_get
+      parameters:
+      - name: salt
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Salt
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/{instance_id}/evidence:
+    get:
+      tags:
+      - Instances
+      summary: Get Tee Instance Evidence
+      description: 'Get TEE evidence for a specific instance (quote, GPU evidence, certificate).
+
+
+        Args:
+
+        instance_id: Instance ID
+
+        nonce: User-provided nonce (64 hex characters, 32 bytes)
+
+        include_amd: Include AMD SEV-SNP instances (see the AMD evidence rollout in api.server.util)
+
+
+        Returns:
+
+        TeeInstanceEvidence with quote, gpu_evidence, and certificate
+
+
+        Raises:
+
+        404: Instance not found
+
+        400: Invalid nonce format or instance not TEE-enabled
+
+        403: User cannot access instance
+
+        409: AMD SEV-SNP instance and include_amd is false (Deprecation and Sunset headers name
+
+        the date AMD instances start being included by default), or the instance is not
+
+        active and verified (stale; refresh the instance list)
+
+        429: Rate limit exceeded (per caller, plus a global ceiling; 4xx responses only count
+
+        toward a looser cap on all attempts)
+
+        500: Server attestation failures
+
+        502: The instance''s attestation proxy could not be reached or returned an error'
+      operationId: get_tee_instance_evidence_instances__instance_id__evidence_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Instance Id
+      - name: nonce
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Nonce
+      - name: include_amd
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: 'Include AMD SEV-SNP instances (tee_type snp: the quote is an SEV-SNP attestation report). Set true once your verifier handles them. The default becomes true on the date in the Sunset header.'
+          default: false
+          title: Include Amd
+        description: 'Include AMD SEV-SNP instances (tee_type snp: the quote is an SEV-SNP attestation report). Set true once your verifier handles them. The default becomes true on the date in the Sunset header.'
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/{instance_id}/logs:
+    get:
+      tags:
+      - Instances
+      summary: Stream Logs
+      description: 'Fetch raw kubernetes pod logs.
+
+
+        NOTE: These are pod logs, not request data/etc., so it will never
+
+        include prompts, responses, etc. Used for troubleshooting and checking
+
+        status of warmup, etc.'
+      operationId: stream_logs_instances__instance_id__logs_get
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Instance Id
+      - name: backfill
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 100
+          title: Backfill
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/{chute_id}/{instance_id}/disable:
+    post:
+      tags:
+      - Instances
+      summary: Disable Instance Endpoint
+      operationId: disable_instance_endpoint_instances__chute_id___instance_id__disable_post
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Instance Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /instances/{chute_id}/{instance_id}:
+    delete:
+      tags:
+      - Instances
+      summary: Delete Instance
+      operationId: delete_instance_instances__chute_id___instance_id__delete
+      security:
+      - APIKeyHeader: []
+      parameters:
+      - name: chute_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Chute Id
+      - name: instance_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Instance Id
+      - name: X-Chutes-Hotkey
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Hotkey
+      - name: X-Chutes-Signature
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Signature
+      - name: X-Chutes-Nonce
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Chutes-Nonce
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LogShipmentArgs:
+      properties:
+        deployment_id:
+          type: string
+          title: Deployment Id
+          description: From the chutes/deployment-id pod label; empty if absent. Never used for auth.
+          default: ''
+        logs:
+          items:
+            $ref: '#/components/schemas/LogLine'
+          type: array
+          title: Logs
+      type: object
+      title: LogShipmentArgs
+      description: 'Request body for POST /instances/launch_config/{config_id}/logs.
+
+
+        ``deployment_id`` is the sole top-level metadata field: it is non-security
+
+        correlation data (Grafana filtering only) that the validator cannot derive
+
+        from ``config_id`` in the pre-registration window, so the guest supplies it
+
+        from the ``chutes/deployment-id`` pod label. It is never used for auth.'
+    LaunchConfigArgs:
+      properties:
+        gpus:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Gpus
+        host:
+          type: string
+          title: Host
+        port_mappings:
+          items:
+            $ref: '#/components/schemas/PortMap'
+          type: array
+          title: Port Mappings
+        fsv:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fsv
+        egress:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Egress
+        lock_modules:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Lock Modules
+        netnanny_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Netnanny Hash
+        run_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Path
+        py_dirs:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Py Dirs
+        rint_commitment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Commitment
+        rint_nonce:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Nonce
+        rint_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Pubkey
+        tls_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert
+        tls_cert_sig:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert Sig
+        tls_ca_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Ca Cert
+        tls_client_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Cert
+        tls_client_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key
+        tls_client_key_password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key Password
+        e2e_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: E2E Pubkey
+        cllmv_session_init:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cllmv Session Init
+        env:
+          type: string
+          title: Env
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        run_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Code
+        inspecto:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Inspecto
+      type: object
+      required:
+      - gpus
+      - host
+      - port_mappings
+      - env
+      title: LaunchConfigArgs
+    LegacyTeeLaunchConfigArgs:
+      properties:
+        gpus:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Gpus
+        host:
+          type: string
+          title: Host
+        port_mappings:
+          items:
+            $ref: '#/components/schemas/PortMap'
+          type: array
+          title: Port Mappings
+        fsv:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fsv
+        egress:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Egress
+        lock_modules:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Lock Modules
+        netnanny_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Netnanny Hash
+        run_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Path
+        py_dirs:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Py Dirs
+        rint_commitment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Commitment
+        rint_nonce:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Nonce
+        rint_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Pubkey
+        tls_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert
+        tls_cert_sig:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert Sig
+        tls_ca_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Ca Cert
+        tls_client_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Cert
+        tls_client_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key
+        tls_client_key_password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key Password
+        e2e_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: E2E Pubkey
+        cllmv_session_init:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cllmv Session Init
+        env:
+          type: string
+          title: Env
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        run_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Code
+        inspecto:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Inspecto
+        gpu_evidence:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Gpu Evidence
+      type: object
+      required:
+      - gpus
+      - host
+      - port_mappings
+      - env
+      - gpu_evidence
+      title: LegacyTeeLaunchConfigArgs
+    PortMap:
+      properties:
+        internal_port:
+          type: integer
+          maximum: 65535.0
+          minimum: 22.0
+          title: Internal Port
+        external_port:
+          type: integer
+          maximum: 65535.0
+          minimum: 22.0
+          title: External Port
+        proto:
+          type: string
+          title: Proto
+        default:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Default
+      type: object
+      required:
+      - internal_port
+      - external_port
+      title: PortMap
+    LogLine:
+      properties:
+        ts:
+          type: string
+          title: Ts
+          description: RFC3339 nanosecond timestamp, e.g. 2026-07-27T00:00:00.123456789Z
+        stream:
+          type: string
+          title: Stream
+          description: stdout | stderr
+          default: stdout
+        log:
+          type: string
+          title: Log
+          description: The log line content
+          default: ''
+      type: object
+      required:
+      - ts
+      title: LogLine
+      description: One CRI log line as shipped by the guest.
+    TeeLaunchConfigArgs:
+      properties:
+        gpus:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Gpus
+        host:
+          type: string
+          title: Host
+        port_mappings:
+          items:
+            $ref: '#/components/schemas/PortMap'
+          type: array
+          title: Port Mappings
+        fsv:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fsv
+        egress:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Egress
+        lock_modules:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Lock Modules
+        netnanny_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Netnanny Hash
+        run_path:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Path
+        py_dirs:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Py Dirs
+        rint_commitment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Commitment
+        rint_nonce:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Nonce
+        rint_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Rint Pubkey
+        tls_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert
+        tls_cert_sig:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Cert Sig
+        tls_ca_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Ca Cert
+        tls_client_cert:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Cert
+        tls_client_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key
+        tls_client_key_password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tls Client Key Password
+        e2e_pubkey:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: E2E Pubkey
+        cllmv_session_init:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cllmv Session Init
+        env:
+          type: string
+          title: Env
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        run_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Run Code
+        inspecto:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Inspecto
+        deployment_id:
+          type: string
+          title: Deployment Id
+      type: object
+      required:
+      - gpus
+      - host
+      - port_mappings
+      - env
+      - deployment_id
+      title: TeeLaunchConfigArgs
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: Authorization
