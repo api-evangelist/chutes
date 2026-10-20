@@ -20,7 +20,7 @@
   partner_name: OpenAI
   type: contract
   channel: provider-built
-  evidence: https://github.com/api-evangelist/chutes/blob/main/openapi/chutes-chat-completions-api-openapi.yml#L4
+  evidence: https://github.com/api-evangelist/chutes/blob/main/openapi/_superseded/2026-10-19-stale/chutes-chat-completions-api-openapi.yml#L4
   source: edge
   relationship: compatible
   contract_reference:

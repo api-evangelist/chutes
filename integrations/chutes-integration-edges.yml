@@ -26,7 +26,7 @@ edges:
   channel: provider-built
   relationship: compatible
   direction: provider-built
-  evidence: https://github.com/api-evangelist/chutes/blob/main/openapi/chutes-chat-completions-api-openapi.yml#L4
+  evidence: https://github.com/api-evangelist/chutes/blob/main/openapi/_superseded/2026-10-19-stale/chutes-chat-completions-api-openapi.yml#L4
   contract_reference:
     repo: chutes
     spec_file: chutes-chat-completions-api-openapi.yml
