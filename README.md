@@ -1,4 +1,4 @@
-# Chutes (chutes)
+# Chutes
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,122 +66,140 @@
 
 Chutes is a permissionless, serverless AI compute platform that lets developers deploy and run any model as an autoscaling "chute" on decentralized GPU capacity (Bittensor Subnet 64). It exposes a single OpenAI-compatible inference endpoint at llm.chutes.ai/v1 for hundreds of open-source LLMs, plus a management REST API at api.chutes.ai for building images and deploying, listing, and operating chutes.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/chutes/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/chutes/refs/heads/main/apis.yml)
+**Areas:** Artificial Intelligence · LLM · Inference · Serverless · GPU · Bittensor · Real-Time
 
-> Chutes runs on the Bittensor network as Subnet 64: model inference is served by a decentralized pool of GPU miners, and compute is incentivized in TAO. This is why some models are free or unusually cheap, and why pricing fluctuates with subnet economics.
+## Chutes on APIs.io
 
-## Tags
+Everything profiled for Chutes is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/chutes/](https://apis.io/providers/chutes/)** — or go straight to one of the APIs or properties below.
 
-- AI
-- LLM
-- Inference
-- Serverless
-- GPU
-- Bittensor
+### APIs (4)
 
-## Timestamps
+- [Chutes API](https://apis.io/apis/chutes/chutes-chutes-api/) — Deploy, list, retrieve, update, and delete chutes.
+- [Chutes Images API](https://apis.io/apis/chutes/chutes-images-api/) — Build, list, retrieve, and delete container images.
+- [Chutes Models API](https://apis.io/apis/chutes/chutes-models-api/) — List models available on the Chutes network.
+- [Chutes Chat Completions API](https://apis.io/apis/chutes/chutes-chat-completions-api/) — OpenAI-compatible chat completions.
 
-- **Created:** 2026-06-21
-- **Modified:** 2026-06-21
+### Published properties
 
-## APIs
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-### Chutes LLM Inference (Chat Completions) API
+#### AsyncAPI (1)
 
-OpenAI-compatible chat completions across hundreds of open-source models (DeepSeek, Qwen, Llama, GLM, Mistral, and more) served on the Chutes network at a single shared endpoint, with streaming, tool use, and a drop-in OpenAI client.
+Event-driven and webhook contracts.
 
-- **Human URL:** [https://chutes.ai/docs/examples/llm-chat](https://chutes.ai/docs/examples/llm-chat)
-- **Base URL:** `https://llm.chutes.ai/v1`
+- [Chutes Chat Completions Streaming (HTTP + SSE)](https://apis.io/asyncapis/chutes/chutes-asyncapi/)
 
-#### Tags
+#### Event channels (1)
 
-- Chat
-- Completions
-- LLM
+Individual events and webhooks the provider emits.
 
-#### Properties
+- [/chat/completions](https://apis.io/channels/chutes/chat-completions/)
 
-- [Documentation](https://chutes.ai/docs/examples/llm-chat)
-- [API Reference](https://chutes.ai/docs/api-reference/overview)
-- [OpenAPI](openapi/chutes-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [AsyncAPI](asyncapi/chutes-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
-- [Postman Collection](collections/chutes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/chutes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Agentic access (1)
 
-### Chutes Image / Other Models API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-Image generation (diffusion), embeddings, audio, and other non-chat model workloads are exposed as user-defined "cords" (decorated HTTP endpoints) on each deployed chute, plus templated vLLM and diffusion deploy helpers.
+- [Chutes Agentic Access](https://apis.io/agentic-access/chutes/chutes-agentic-access/)
 
-- **Human URL:** [https://chutes.ai/docs/templates/vllm](https://chutes.ai/docs/templates/vllm)
-- **Base URL:** `https://api.chutes.ai`
+#### Collections (5)
 
-#### Tags
+Postman and Open Collection request collections.
 
-- Image
-- Diffusion
-- Multimodal
+- [Chutes API](https://apis.io/collections/chutes/open-chutes/)
+- [Chutes Chat API](https://apis.io/collections/chutes/open-chutes-chat-api/)
+- [Chat Chutes API](https://apis.io/collections/chutes/open-chutes-chutes-api/)
+- [Chutes Chat Images API](https://apis.io/collections/chutes/open-chutes-images-api/)
+- [Chutes Chat Models API](https://apis.io/collections/chutes/open-chutes-models-api/)
 
-#### Properties
+#### Governance rules (1)
 
-- [Documentation](https://chutes.ai/docs/core-concepts/cords)
-- [API Reference](https://chutes.ai/docs/api-reference/overview)
-- [OpenAPI](openapi/chutes-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/chutes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/chutes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Spectral rulesets for the provider's contracts.
 
-### Chutes Management (Deploy / List) API
+- [Chutes — asyncapi rules](https://apis.io/rules/chutes/chutes-asyncapi-spectral-rules/)
 
-REST API to list, retrieve, deploy, update, and delete chutes (serverless AI apps), plus templated vLLM/diffusion deploys, warmup, utilization, miner means, and TEE attestation evidence.
+#### Security (2)
 
-- **Human URL:** [https://chutes.ai/docs/api-reference/chutes](https://chutes.ai/docs/api-reference/chutes)
-- **Base URL:** `https://api.chutes.ai`
+Authentication, trust centre, and vulnerability disclosure.
 
-#### Tags
+- [Chutes Authentication](https://apis.io/security/chutes/chutes-authentication/)
+- [Chutes Domain Security](https://apis.io/security/chutes/chutes-domain-security/)
 
-- Management
-- Deploy
-- Serverless
+#### Plans and pricing (1)
 
-#### Properties
+Published plans, tiers and prices.
 
-- [Documentation](https://chutes.ai/docs/getting-started/running-a-chute)
-- [API Reference](https://chutes.ai/docs/api-reference/chutes)
-- [OpenAPI](openapi/chutes-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/chutes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/chutes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Chutes Plans Pricing](https://apis.io/plans/chutes/chutes-plans-pricing/)
 
-### Chutes Images API
+#### Rate limits (1)
 
-Create, list, retrieve, and delete container images that chutes run from; image creation stores metadata and kicks off an asynchronous build that is published to the Chutes registry.
+Published request limits.
 
-- **Human URL:** [https://chutes.ai/docs/api-reference/images](https://chutes.ai/docs/api-reference/images)
-- **Base URL:** `https://api.chutes.ai`
+- [Chutes Rate Limits](https://apis.io/rate-limits/chutes/chutes-rate-limits/)
 
-#### Tags
+#### FinOps (1)
 
-- Images
-- Build
-- Containers
+What the API costs to run, by operation.
 
-#### Properties
+- [Chutes Finops](https://apis.io/finops/chutes/chutes-finops/)
 
-- [Documentation](https://chutes.ai/docs/core-concepts/templates)
-- [API Reference](https://chutes.ai/docs/api-reference/images)
-- [OpenAPI](openapi/chutes-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/chutes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/chutes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+## Where to find this API
 
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- [GitHub Organization](https://github.com/rayonlabs)
-- [LinkedIn](https://www.linkedin.com/company/chutesai)
 - [Website](https://chutes.ai/)
 - [Documentation](https://chutes.ai/docs)
-- [Plans](plans/chutes-plans-pricing.yml)
-- [Rate Limits](rate-limits/chutes-rate-limits.yml)
-- [Fin Ops](finops/chutes-finops.yml)
+- [Pricing](https://chutes.ai/pricing)
+- [GitHub](https://github.com/rayonlabs)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 37.1** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 58.9 |
+| Contract governance | 11.4 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 29.8 |
+| Access clarity | 42.1 |
+
+**Agent readiness 19.0** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 10.9** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/chutes/](https://apis.io/providers/chutes/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Chutes: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/chutes/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
